@@ -1,0 +1,4 @@
+# GitHub Pages config - makes Skilyx live at:
+# https://YOUR-USERNAME.github.io/skilyx
+theme: null
+include: ['index.html','manifest.json','sw.js','icons']
