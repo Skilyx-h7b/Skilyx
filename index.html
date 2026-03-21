@@ -1036,115 +1036,10 @@ function authTab(t) {
   hideErr();
 }
 
-function showErr(m) { const e=document.getElementById('aerr'); e.textContent=m; e.style.display='block'; }
-function hideErr()  { document.getElementById('aerr').style.display='none'; }
 
-// ══════════════════════════════════════════════════════════════
-//  OPEN ONBOARDING — No email, no password, no OTP
-//  Anyone enters freely. Reputation is everything.
-// ══════════════════════════════════════════════════════════════
-
-let _onbAv   = '🦁';
+let _onbAv = '🦁';
 let _onbCity = '';
 const BLOCKED_NAMES = ['admin','skilyx','test','fake','asdf','null','undefined'];
-
-// ══════════════════════════════════════════════════════════════
-//  ONBOARDING — Pure addEventListener, no onclick dependency
-// ══════════════════════════════════════════════════════════════
-
-let _onbAv   = '🦁';
-let _onbCity = '';
-const BLOCKED_NAMES = ['admin','skilyx','test','fake','asdf','null','undefined'];
-
-// Avatar map
-const AV_MAP = {
-  'av-lion':'🦁','av-tiger':'🐯','av-fox':'🦊','av-butterfly':'🦋',
-  'av-moon':'🌙','av-bolt':'⚡','av-wave':'🌊','av-fire':'🔥',
-  'av-diamond':'💎','av-leaf':'🌿','av-target':'🎯','av-rocket':'🚀',
-  'av-masks':'🎭','av-flower':'🌸','av-crown':'👑'
-};
-
-function initOnboarding() {
-  // Avatar selection
-  Object.entries(AV_MAP).forEach(([id, emoji]) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.addEventListener('click', () => selectAvatar(id, emoji));
-    el.addEventListener('touchend', (e) => { e.preventDefault(); selectAvatar(id, emoji); });
-  });
-
-  // Next button step 1
-  const n1 = document.getElementById('next1-btn');
-  if (n1) {
-    n1.addEventListener('click', () => goStep(2));
-    n1.addEventListener('touchend', (e) => { e.preventDefault(); goStep(2); });
-  }
-
-  // Next button step 2
-  const n2 = document.getElementById('next2-btn');
-  if (n2) {
-    n2.addEventListener('click', () => goStep(3));
-    n2.addEventListener('touchend', (e) => { e.preventDefault(); goStep(3); });
-  }
-
-  // Back buttons
-  const b1 = document.getElementById('back1-btn');
-  if (b1) {
-    b1.addEventListener('click', () => goStep(1));
-    b1.addEventListener('touchend', (e) => { e.preventDefault(); goStep(1); });
-  }
-  const b2 = document.getElementById('back2-btn');
-  if (b2) {
-    b2.addEventListener('click', () => goStep(2));
-    b2.addEventListener('touchend', (e) => { e.preventDefault(); goStep(2); });
-  }
-
-  // Finish button
-  const fb = document.getElementById('finish-btn');
-  if (fb) {
-    fb.addEventListener('click', finishOnboarding);
-    fb.addEventListener('touchend', (e) => { e.preventDefault(); finishOnboarding(); });
-  }
-
-  // City options
-  document.querySelectorAll('.city-opt').forEach(el => {
-    const city = el.getAttribute('data-city') || el.textContent.trim();
-    el.addEventListener('click', () => selectCity(el, city));
-    el.addEventListener('touchend', (e) => { e.preventDefault(); selectCity(el, city); });
-  });
-
-  // Name input
-  const ni = document.getElementById('onb-name');
-  if (ni) ni.addEventListener('input', () => checkOnbName(ni));
-}
-
-function selectAvatar(id, emoji) {
-  Object.keys(AV_MAP).forEach(avId => {
-    const el = document.getElementById(avId);
-    if (el) el.style.border = '2px solid #333';
-  });
-  const sel = document.getElementById(id);
-  if (sel) sel.style.border = '2px solid #C9922A';
-  _onbAv = emoji;
-}
-
-function selectCity(el, city) {
-  document.querySelectorAll('.city-opt').forEach(c => {
-    c.style.border = '1.5px solid #333';
-    c.style.color = '#A09C94';
-    c.style.background = '#222';
-  });
-  el.style.border = '1.5px solid #C9922A';
-  el.style.color = '#C9922A';
-  el.style.background = 'rgba(201,146,42,.1)';
-  _onbCity = city;
-  const ow = document.getElementById('city-other-wrap');
-  if (ow) ow.style.display = city === 'Other' ? 'block' : 'none';
-}
-
-// Keep old names as aliases for any remaining onclick refs
-function pickAv(el, emoji) { _onbAv = emoji; }
-function pickCity(el, city) { _onbCity = city; }
 
 function goStep(n) {
   if (n === 3) {
@@ -1152,14 +1047,14 @@ function goStep(n) {
     const name = nameEl ? nameEl.value.trim() : '';
     const hint = document.getElementById('hint-onb-name');
     if (name.length < 2) {
-      if (hint) { hint.textContent = 'Enter at least 2 characters'; hint.style.color = '#E74C3C'; }
+      if (hint) { hint.textContent='Enter at least 2 characters'; hint.style.color='#E74C3C'; }
       if (nameEl) nameEl.focus();
       return;
     }
   }
   for (let i=1; i<=3; i++) {
     const el = document.getElementById('onb-'+i);
-    if (el) el.style.display = i===n ? 'block' : 'none';
+    if (el) el.style.display = (i===n) ? 'block' : 'none';
   }
   if (n===2) {
     const prev = document.getElementById('onb-av-preview');
@@ -1167,37 +1062,33 @@ function goStep(n) {
   }
 }
 
-// Keep onbStep as alias
 function onbStep(n) { goStep(n); }
+function initOnboarding() {}
+function initOnbTouchHandlers() {}
 
 function checkOnbName(input) {
   const val = input.value.trim();
   const hint = document.getElementById('hint-onb-name');
   if (!hint) return;
-  if (!val) { hint.textContent = ''; return; }
-  if (val.length < 2) { hint.style.color='#E8B84B'; hint.textContent='Keep going…'; return; }
-  if (BLOCKED_NAMES.some(b=>val.toLowerCase()===b)) {
-    hint.style.color='#E74C3C'; hint.textContent='Please use a real name'; return;
-  }
+  if (!val) { hint.textContent=''; return; }
+  if (val.length<2) { hint.style.color='#E8B84B'; hint.textContent='Keep going…'; return; }
   hint.style.color='#27AE60'; hint.textContent='✓ Looks good';
 }
 
 function finishOnboarding() {
   const nameEl = document.getElementById('onb-name');
   const name = nameEl ? nameEl.value.trim() : '';
-  if (!name || name.length < 2) { goStep(2); return; }
-
+  if (!name || name.length<2) { goStep(2); return; }
   let city = _onbCity;
-  if (city === 'Other') {
+  if (city==='Other') {
     const oc = document.getElementById('city-other');
-    city = oc ? (oc.value.trim() || 'South Africa') : 'South Africa';
+    city = oc ? (oc.value.trim()||'South Africa') : 'South Africa';
   }
-  if (!city) { showToast('Please pick your city', 'err'); return; }
-
+  if (!city) { showToast('Please pick your city','err'); return; }
   const users = DB.all('users');
   let finalName = name;
-  if (users.find(u => u.name.toLowerCase() === name.toLowerCase())) {
-    finalName = name + (Math.floor(Math.random()*900)+100);
+  if (users.find(u=>u.name.toLowerCase()===name.toLowerCase())) {
+    finalName = name+(Math.floor(Math.random()*900)+100);
     showToast('Name taken — registered as '+finalName);
   }
   createProfile(finalName, city);
@@ -1207,136 +1098,12 @@ function createProfile(name, city) {
   const users = DB.all('users');
   const user = {
     id:uid(), name, avatar:_onbAv, city,
-    role: users.length===0 ? 'admin' : 'user',
+    role: users.length===0?'admin':'user',
     ratingAvg:0, ratingCount:0,
     ratingAsSeller:0, countAsSeller:0,
     ratingAsBuyer:0, countAsBuyer:0,
     totalTrades:0, wallet:0, listings:0, sales:0,
     is_suspended:false, joinedAt:new Date().toISOString()
-  };
-  DB.push('users', user);
-  DB.set('session', user.id);
-  CU = user;
-  afterLogin();
-  showToast('Welcome to Skilyx, '+name+'! 🖤', 'ok');
-}
-
-function initOnbTouchHandlers() { initOnboarding(); }
-
-function showErr(m) {function showErr(m) { const e=document.getElementById('aerr'); e.textContent=m; e.style.display='block'; }
-function hideErr()  { document.getElementById('aerr').style.display='none'; }
-
-// ══════════════════════════════════════════════════════════════
-//  OPEN ONBOARDING — No email, no password, no OTP
-//  Anyone enters freely. Reputation is everything.
-// ══════════════════════════════════════════════════════════════
-
-let _onbAv   = '🦁';
-let _onbCity = '';
-const BLOCKED_NAMES = ['admin','skilyx','test','fake','asdf','null','undefined'];
-
-// ── TOUCH FIX: bypass Android 300ms tap delay ──────────────────
-// Use a single passive touchstart to unlock fast taps globally
-document.addEventListener('touchstart', function(){}, {passive:true});
-
-// Dummy functions - touch handlers removed, onclick handles everything
-function addTouchHandler(selector, handler) {}
-function initOnbTouchHandlers() {}
-
-function onbStep(n) {
-  // Validate name only when moving FROM step 2 TO step 3
-  if (n === 3) {
-    const nameEl = document.getElementById('onb-name');
-    const name = nameEl ? (nameEl.value||'').trim() : '';
-    const hint = document.getElementById('hint-onb-name');
-    if (name.length < 2) {
-      if (hint) { hint.textContent = 'Enter at least 2 characters'; hint.className = 'field-hint err'; }
-      nameEl && nameEl.focus();
-      return;
-    }
-    if (BLOCKED_NAMES.some(b => name.toLowerCase() === b)) {
-      if (hint) { hint.textContent = 'Please use a real name or handle'; hint.className = 'field-hint err'; }
-      return;
-    }
-  }
-  // Show correct step, hide others
-  for (let i=1; i<=3; i++) {
-    const el = document.getElementById('onb-'+i);
-    if (el) el.style.display = (i === n) ? 'block' : 'none';
-  }
-  // Update avatar preview on step 2
-  if (n === 2) {
-    const prev = document.getElementById('onb-av-preview');
-    if (prev) prev.textContent = _onbAv;
-  }
-  // Scroll sheet to top
-  const sheet = document.getElementById('onb-'+n);
-  if (sheet) sheet.scrollTop = 0;
-
-}
-
-function pickAv(el, emoji) {
-  try {
-    document.querySelectorAll('.av-opt').forEach(e=>e.classList.remove('sel'));
-    el.classList.add('sel');
-    _onbAv = emoji;
-    // Visual feedback
-    el.style.transform = 'scale(1.1)';
-    setTimeout(()=>{ el.style.transform = ''; }, 200);
-  } catch(err) { console.error('pickAv error:', err); }
-}
-
-function pickCity(el, city) {
-  document.querySelectorAll('.city-opt').forEach(e=>e.classList.remove('sel'));
-  el.classList.add('sel'); _onbCity = city;
-  document.getElementById('city-other-wrap').style.display = city==='Other'?'block':'none';
-}
-
-function checkOnbName(input) {
-  const val   = input.value.trim();
-  const count = document.getElementById('onb-name-count');
-  const hint  = document.getElementById('hint-onb-name');
-  if (count) count.textContent = val.length+'/30';
-  if (!val)  { hint.textContent=''; return; }
-  if (val.length < 2)  { hint.className='field-hint warn'; hint.textContent='Keep going…'; return; }
-  if (BLOCKED_NAMES.some(b=>val.toLowerCase()===b)) {
-    hint.className='field-hint err'; hint.textContent='Please use a real name or handle'; return;
-  }
-  hint.className='field-hint ok'; hint.textContent='✓ Looks good';
-}
-
-function finishOnboarding() {
-  const name = (document.getElementById('onb-name').value||'').trim();
-  if (!name||name.length<2) { onbStep(2); return; }
-
-  let city = _onbCity;
-  if (city==='Other') city=(document.getElementById('city-other').value||'').trim()||'South Africa';
-  if (!city) { showToast('Pick your city first','err'); return; }
-
-  // Make name unique if taken
-  const users = DB.all('users');
-  let finalName = name;
-  if (users.find(u=>u.name.toLowerCase()===name.toLowerCase())) {
-    finalName = name + (Math.floor(Math.random()*900)+100);
-    showToast('Name taken — registered as '+finalName);
-  }
-  createProfile(finalName, city);
-}
-
-function createProfile(name, city) {
-  const users = DB.all('users');
-  const user = {
-    id: uid(), name, avatar: _onbAv, city,
-    role: users.length===0 ? 'admin' : 'user',
-    // Universal reputation — applies to everyone, buyer or seller
-    ratingAvg:0, ratingCount:0,
-    ratingAsSeller:0, countAsSeller:0,
-    ratingAsBuyer:0,  countAsBuyer:0,
-    totalTrades:0,
-    // Stats
-    wallet:0, listings:0, sales:0,
-    is_suspended:false,
-    joinedAt: new Date().toISOString()
   };
   DB.push('users', user);
   DB.set('session', user.id);
@@ -1354,6 +1121,7 @@ function hideErr() {
   const e=document.getElementById('aerr');
   if(e) e.style.display='none';
 }
+
 
 function afterLogin() {
   if(CU.role==='admin'){
@@ -2467,89 +2235,96 @@ window.addEventListener('hashchange',handleDeepLink);
 
 window.addEventListener('DOMContentLoaded', ()=>{
 
-  // ── ONBOARDING WIRING — runs after DOM is ready ──
-  function wire() {
-    // Helper: bind both click and touchend, debounced
-    function b(id, fn) {
-      const el = document.getElementById(id);
+  // ── ONBOARDING — same pattern as working test file ──
+  // Use touchstart on parent containers (proven to work on Android)
+
+  // Avatar grid — touchstart on grid parent
+  var grid = document.getElementById('av-grid');
+  if (grid) {
+    grid.addEventListener('touchstart', function(e) {
+      var el = e.target.closest('[id^="av-"]');
       if (!el) return;
-      let busy = false;
-      function go(e) {
-        if (e.cancelable) e.preventDefault();
-        if (busy) return; busy = true;
-        setTimeout(()=>busy=false, 400);
-        fn();
-      }
-      el.addEventListener('touchend', go, {passive:false});
-      el.addEventListener('click', go);
-    }
-
-    // Buttons
-    b('next1-btn',  ()=>goStep(2));
-    b('next2-btn',  ()=>goStep(3));
-    b('back1-btn',  ()=>goStep(1));
-    b('back2-btn',  ()=>goStep(2));
-    b('finish-btn', ()=>finishOnboarding());
-
-    // Avatar tiles
-    const AV = {
-      'av-lion':'🦁','av-tiger':'🐯','av-fox':'🦊','av-butterfly':'🦋',
-      'av-moon':'🌙','av-bolt':'⚡','av-wave':'🌊','av-fire':'🔥',
-      'av-diamond':'💎','av-leaf':'🌿','av-target':'🎯','av-rocket':'🚀',
-      'av-masks':'🎭','av-flower':'🌸','av-crown':'👑'
-    };
-    Object.entries(AV).forEach(([id, emoji]) => {
-      const el = document.getElementById(id);
+      e.preventDefault();
+      var allAvs = grid.querySelectorAll('[id^="av-"]');
+      allAvs.forEach(function(a){ a.style.border='2px solid #2E2E2C'; });
+      el.style.border='2px solid #C9922A';
+      _onbAv = el.textContent.trim();
+    }, {passive:false});
+    grid.addEventListener('click', function(e) {
+      var el = e.target.closest('[id^="av-"]');
       if (!el) return;
-      let busy = false;
-      function go(e) {
-        if (e.cancelable) e.preventDefault();
-        if (busy) return; busy = true;
-        setTimeout(()=>busy=false,300);
-        // Deselect all, select this one
-        Object.keys(AV).forEach(aid=>{
-          const a=document.getElementById(aid);
-          if(a) a.style.border='2px solid #2E2E2C';
-        });
-        el.style.border='2px solid #C9922A';
-        _onbAv = emoji;
-      }
-      el.addEventListener('touchend', go, {passive:false});
-      el.addEventListener('click', go);
+      var allAvs = grid.querySelectorAll('[id^="av-"]');
+      allAvs.forEach(function(a){ a.style.border='2px solid #2E2E2C'; });
+      el.style.border='2px solid #C9922A';
+      _onbAv = el.textContent.trim();
     });
-
-    // City tiles
-    document.querySelectorAll('.city-opt').forEach(el => {
-      const city = el.getAttribute('data-city') || el.textContent.trim();
-      let busy = false;
-      function go(e) {
-        if (e.cancelable) e.preventDefault();
-        if (busy) return; busy = true;
-        setTimeout(()=>busy=false,300);
-        document.querySelectorAll('.city-opt').forEach(c=>{
-          c.style.border='1.5px solid #2E2E2C';
-          c.style.color='#A09C94';
-          c.style.background='#1C1C1A';
-        });
-        el.style.border='1.5px solid #C9922A';
-        el.style.color='#C9922A';
-        el.style.background='rgba(201,146,42,.1)';
-        _onbCity = city;
-        const ow=document.getElementById('city-other-wrap');
-        if(ow) ow.style.display = city==='Other'?'block':'none';
-      }
-      el.addEventListener('touchend', go, {passive:false});
-      el.addEventListener('click', go);
-    });
-
-    // Name input live check
-    const ni = document.getElementById('onb-name');
-    if (ni) ni.addEventListener('input', ()=>checkOnbName(ni));
   }
 
-  // Wire immediately and again after short delay (catches slow renders)
-  wire();
-  setTimeout(wire, 500);
+  // NEXT button step 1
+  var n1 = document.getElementById('next1-btn');
+  if (n1) {
+    n1.addEventListener('touchstart', function(e){ e.preventDefault(); goStep(2); }, {passive:false});
+    n1.addEventListener('click', function(){ goStep(2); });
+  }
+
+  // NEXT button step 2
+  var n2 = document.getElementById('next2-btn');
+  if (n2) {
+    n2.addEventListener('touchstart', function(e){ e.preventDefault(); goStep(3); }, {passive:false});
+    n2.addEventListener('click', function(){ goStep(3); });
+  }
+
+  // BACK buttons
+  var b1 = document.getElementById('back1-btn');
+  if (b1) {
+    b1.addEventListener('touchstart', function(e){ e.preventDefault(); goStep(1); }, {passive:false});
+    b1.addEventListener('click', function(){ goStep(1); });
+  }
+  var b2 = document.getElementById('back2-btn');
+  if (b2) {
+    b2.addEventListener('touchstart', function(e){ e.preventDefault(); goStep(2); }, {passive:false});
+    b2.addEventListener('click', function(){ goStep(2); });
+  }
+
+  // FINISH button step 3
+  var fb = document.getElementById('finish-btn');
+  if (fb) {
+    fb.addEventListener('touchstart', function(e){ e.preventDefault(); finishOnboarding(); }, {passive:false});
+    fb.addEventListener('click', function(){ finishOnboarding(); });
+  }
+
+  // City grid
+  var cg = document.getElementById('city-grid');
+  if (cg) {
+    function pickCityEl(el) {
+      document.querySelectorAll('.city-opt').forEach(function(c){
+        c.style.border='1.5px solid #2E2E2C';
+        c.style.color='#A09C94';
+        c.style.background='#1C1C1A';
+      });
+      el.style.border='1.5px solid #C9922A';
+      el.style.color='#C9922A';
+      el.style.background='rgba(201,146,42,.1)';
+      _onbCity = el.getAttribute('data-city') || el.textContent.trim();
+      var ow = document.getElementById('city-other-wrap');
+      if (ow) ow.style.display = _onbCity==='Other' ? 'block' : 'none';
+    }
+    cg.addEventListener('touchstart', function(e){
+      var el = e.target.closest('.city-opt');
+      if (!el) return;
+      e.preventDefault();
+      pickCityEl(el);
+    }, {passive:false});
+    cg.addEventListener('click', function(e){
+      var el = e.target.closest('.city-opt');
+      if (!el) return;
+      pickCityEl(el);
+    });
+  }
+
+  // Name input
+  var ni = document.getElementById('onb-name');
+  if (ni) ni.addEventListener('input', function(){ checkOnbName(ni); });
 
   // ── Demo data wipe ──
   clearDemoData();
