@@ -462,21 +462,23 @@ select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=
 <div id="app">
 
 <!-- ═══ AUTH ═══ -->
-<div class="screen active" id="screen-auth">
-  <div class="ag"></div>
-  <div class="at">
+<div class="screen active" id="screen-auth" style="position:relative;overflow:hidden">
+  <!-- Background -->
+  <div class="ag" style="pointer-events:none;z-index:0"></div>
+  <!-- Top branding — pointer-events none so it never blocks taps -->
+  <div class="at" style="pointer-events:none;z-index:0">
     <div class="asl">Local Dreams Made Possible</div>
     <div class="aw">Skil<span>yx</span></div>
-    <div style="font-family:var(--fb);font-size:10px;font-weight:600;color:rgba(255,255,255,.42);letter-spacing:.14em;text-transform:uppercase;margin-top:6px;margin-bottom:10px">by Olerato Mongwe</div>
+    <div style="font-family:var(--fb);font-size:10px;font-weight:600;color:rgba(255,255,255,.55);letter-spacing:.16em;text-transform:uppercase;margin-top:5px;margin-bottom:10px">by Olerato Mongwe</div>
     <div class="atag">"Where every local dream<br>finds its market."</div>
   </div>
 
-  <!-- STEP 1 — Pick your avatar -->
-  <div class="onb-sheet" id="onb-1">
-    <div class="ahdl"></div>
+  <!-- STEP 1 — Pick avatar — sits on top with high z-index -->
+  <div id="onb-1" style="position:absolute;bottom:0;left:0;right:0;background:#141412;border-radius:24px 24px 0 0;padding:24px 24px max(24px,env(safe-area-inset-bottom));z-index:50;max-height:72vh;overflow-y:auto">
+    <div style="width:34px;height:3px;background:#333;border-radius:2px;margin:0 auto 20px"></div>
     <div class="onb-title">Pick your avatar</div>
-    <div class="onb-sub">No email. No password. No OTP. Just pick who you are and start trading.</div>
-    <div class="avatar-grid" id="av-grid">
+    <div class="onb-sub">No email. No password. Just pick who you are and start trading.</div>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px;position:relative;z-index:2" id="av-grid">
       <div class="av-opt sel" onclick="pickAv(this,'🦁')">🦁</div>
       <div class="av-opt" onclick="pickAv(this,'🐯')">🐯</div>
       <div class="av-opt" onclick="pickAv(this,'🦊')">🦊</div>
@@ -493,36 +495,37 @@ select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=
       <div class="av-opt" onclick="pickAv(this,'🌸')">🌸</div>
       <div class="av-opt" onclick="pickAv(this,'👑')">👑</div>
     </div>
-    <button class="btn" onclick="onbStep(2)">Next →</button>
+    <button onclick="onbStep(2)" style="width:100%;padding:16px;background:#C9922A;color:#fff;border:none;border-radius:12px;font-family:var(--fb);font-size:15px;font-weight:800;cursor:pointer;letter-spacing:.05em;text-transform:uppercase;position:relative;z-index:2;touch-action:manipulation">Next →</button>
   </div>
 
-  <!-- STEP 2 — Your name -->
-  <div class="onb-sheet" id="onb-2" style="display:none">
-    <div class="ahdl"></div>
-    <div style="font-size:40px;text-align:center;margin-bottom:12px" id="onb-av-preview">🦁</div>
+  <!-- STEP 2 — Name -->
+  <div id="onb-2" style="display:none;position:absolute;bottom:0;left:0;right:0;background:#141412;border-radius:24px 24px 0 0;padding:24px 24px max(24px,env(safe-area-inset-bottom));z-index:50;max-height:72vh;overflow-y:auto">
+    <div style="width:34px;height:3px;background:#333;border-radius:2px;margin:0 auto 20px"></div>
+    <div style="font-size:44px;text-align:center;margin-bottom:14px" id="onb-av-preview">🦁</div>
     <div class="onb-title">What do people call you?</div>
-    <div class="onb-sub">A name or a handle — your choice. This is what buyers and sellers see.</div>
-    <div class="fg">
+    <div class="onb-sub">A name or handle — buyers and sellers will see this.</div>
+    <div style="margin-bottom:16px">
       <label class="fl">Your Name</label>
       <input class="fi" id="onb-name" type="text" placeholder="e.g. Olerato or OleratoJHB"
         autocomplete="nickname" maxlength="30"
         oninput="checkOnbName(this)"
-        onkeydown="if(event.key==='Enter')onbStep(3)">
+        onkeydown="if(event.key==='Enter')onbStep(3)"
+        style="width:100%">
       <div style="display:flex;justify-content:space-between;margin-top:5px">
         <div class="field-hint" id="hint-onb-name"></div>
         <span style="font-size:11px;color:var(--txt3)" id="onb-name-count">0/30</span>
       </div>
     </div>
-    <button class="btn" id="onb-next-2" onclick="onbStep(3)">Next →</button>
-    <button onclick="onbStep(1)" style="width:100%;padding:11px;background:none;border:none;color:var(--txt3);cursor:pointer;font-size:13px;margin-top:8px;font-family:var(--fb)">← Back</button>
+    <button onclick="onbStep(3)" style="width:100%;padding:16px;background:#C9922A;color:#fff;border:none;border-radius:12px;font-family:var(--fb);font-size:15px;font-weight:800;cursor:pointer;letter-spacing:.05em;text-transform:uppercase;margin-bottom:10px;touch-action:manipulation">Next →</button>
+    <button onclick="onbStep(1)" style="width:100%;padding:12px;background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;font-size:13px;font-family:var(--fb);touch-action:manipulation">← Back</button>
   </div>
 
-  <!-- STEP 3 — Your city -->
-  <div class="onb-sheet" id="onb-3" style="display:none">
-    <div class="ahdl"></div>
+  <!-- STEP 3 — City -->
+  <div id="onb-3" style="display:none;position:absolute;bottom:0;left:0;right:0;background:#141412;border-radius:24px 24px 0 0;padding:24px 24px max(24px,env(safe-area-inset-bottom));z-index:50;max-height:72vh;overflow-y:auto">
+    <div style="width:34px;height:3px;background:#333;border-radius:2px;margin:0 auto 20px"></div>
     <div class="onb-title">Where are you based?</div>
-    <div class="onb-sub">Helps people find deals near them. Pick the closest city.</div>
-    <div class="city-grid" id="city-grid">
+    <div class="onb-sub">Helps people find deals near them.</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px" id="city-grid">
       <div class="city-opt" onclick="pickCity(this,'Johannesburg')">Johannesburg</div>
       <div class="city-opt" onclick="pickCity(this,'Cape Town')">Cape Town</div>
       <div class="city-opt" onclick="pickCity(this,'Durban')">Durban</div>
@@ -536,11 +539,11 @@ select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=
       <div class="city-opt" onclick="pickCity(this,'Centurion')">Centurion</div>
       <div class="city-opt" onclick="pickCity(this,'Other')">Other</div>
     </div>
-    <div class="fg" id="city-other-wrap" style="display:none">
-      <input class="fi" id="city-other" placeholder="Type your city…">
+    <div id="city-other-wrap" style="display:none;margin-bottom:16px">
+      <input class="fi" id="city-other" placeholder="Type your city…" style="width:100%">
     </div>
-    <button class="btn" id="onb-finish-btn" onclick="finishOnboarding()">Enter Skilyx →</button>
-    <button onclick="onbStep(2)" style="width:100%;padding:11px;background:none;border:none;color:var(--txt3);cursor:pointer;font-size:13px;margin-top:8px;font-family:var(--fb)">← Back</button>
+    <button onclick="finishOnboarding()" style="width:100%;padding:16px;background:#0A0A0A;color:#fff;border:none;border-radius:12px;font-family:var(--fb);font-size:15px;font-weight:800;cursor:pointer;letter-spacing:.05em;text-transform:uppercase;margin-bottom:10px;touch-action:manipulation">Enter Skilyx →</button>
+    <button onclick="onbStep(2)" style="width:100%;padding:12px;background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;font-size:13px;font-family:var(--fb);touch-action:manipulation">← Back</button>
   </div>
 </div>
 

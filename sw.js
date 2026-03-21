@@ -1,5 +1,4 @@
-// Skilyx Service Worker — enables offline use and faster loads
-const CACHE = 'skilyx-v1';
+const CACHE = 'skilyx-v4';
 const ASSETS = ['/index.html', '/manifest.json'];
 
 self.addEventListener('install', e => {
@@ -17,7 +16,6 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
-  // Network first, fall back to cache
   e.respondWith(
     fetch(e.request).catch(() => caches.match(e.request))
   );
