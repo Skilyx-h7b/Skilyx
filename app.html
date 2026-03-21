@@ -7,7 +7,10 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>Skilyx — Local Dreams Made Possible</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"></noscript>
 <style>
 :root{
   --bg:#0E0E0D;--bg2:#141412;--s:#1A1A18;--s2:#202020;--s3:#282826;
@@ -447,16 +450,62 @@ select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=
 .pin-setup-title{font-family:var(--fh);font-size:20px;font-weight:700;color:var(--txt);margin-bottom:4px}
 .pin-setup-sub{font-size:13px;color:var(--txt3);margin-bottom:24px;line-height:1.5}
 </style>
+<script>
+// Hide splash as soon as possible
+document.addEventListener('DOMContentLoaded', function() {
+  var s = document.getElementById('splash');
+  if (s) s.style.display = 'none';
+});
+// Absolute failsafe
+window.addEventListener('load', function() {
+  var s = document.getElementById('splash');
+  if (s) s.style.display = 'none';
+});
+</script>
 </head>
 <body>
 <!-- DEBUG PANEL -->
 <div id="debug-panel" style="display:none;position:fixed;top:0;left:0;right:0;background:rgba(201,146,42,.95);color:#000;font-size:11px;padding:8px 12px;z-index:9999;font-family:monospace;word-break:break-all"></div>
-<!-- Loading splash — shows instantly, hidden after JS runs -->
-<div id="splash" style="position:fixed;inset:0;background:#0A0A0A;z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center">
-  <div style="font-family:'Playfair Display',serif;font-size:48px;font-weight:900;color:#fff;letter-spacing:-.03em">Skil<span style="color:#C9922A">yx</span></div>
-  <div style="width:40px;height:2px;background:#C9922A;margin-top:20px;border-radius:2px;animation:pulse 1s infinite"></div>
+<!-- ══ SPLASH SCREEN ══ -->
+<div id="splash" style="position:fixed;inset:0;background:#0A0A0A;z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden">
+
+  <!-- Gold bar at top -->
+  <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,#C9922A,#E8B84B,#C9922A,transparent);animation:shimmer 2s infinite"></div>
+
+  <!-- Center content -->
+  <div style="display:flex;flex-direction:column;align-items:center;flex:1;justify-content:center">
+    <div style="font-family:'Playfair Display',serif;font-size:56px;font-weight:900;color:#fff;letter-spacing:-.03em;line-height:1;animation:fadeup .5s ease forwards">Skil<span style="color:#C9922A">yx</span></div>
+    <div style="font-size:10px;font-weight:600;color:rgba(255,255,255,.35);letter-spacing:.22em;text-transform:uppercase;margin-top:10px;animation:fadeup .5s .15s ease both">Local Dreams Made Possible</div>
+
+    <!-- Loading bar -->
+    <div style="width:120px;height:1px;background:rgba(255,255,255,.08);border-radius:1px;margin-top:40px;overflow:hidden">
+      <div style="height:100%;background:#C9922A;border-radius:1px;animation:load 1.8s ease-in-out infinite"></div>
+    </div>
+  </div>
+
+  <!-- Copyright at bottom -->
+  <div style="padding-bottom:max(32px,env(safe-area-inset-bottom));text-align:center">
+    <div style="font-size:10px;color:rgba(255,255,255,.2);letter-spacing:.06em">© 2025 Skilyx™ · Skilynt Thweft</div>
+    <div style="font-size:9px;color:rgba(255,255,255,.12);letter-spacing:.04em;margin-top:3px">All rights reserved · Built in South Africa 🇿🇦</div>
+  </div>
+
 </div>
-<style>@keyframes pulse{0%,100%{opacity:.3;transform:scaleX(.5)}50%{opacity:1;transform:scaleX(1)}}</style>
+
+<style>
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+@keyframes load {
+  0%   { width:0%;   margin-left:0; }
+  50%  { width:100%; margin-left:0; }
+  100% { width:0%;   margin-left:100%; }
+}
+@keyframes fadeup {
+  from { opacity:0; transform:translateY(12px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+</style>
 <div id="app">
 
 <!-- AUTH -->
@@ -864,6 +913,7 @@ select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=
     <div style="padding:22px 22px 8px;text-align:center;border-top:1px solid var(--b);margin-top:8px">
       <div style="font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--txt);letter-spacing:-.01em;margin-bottom:5px">Skil<span style="color:#C9922A">yx</span>™</div>
       <div style="font-size:11px;color:var(--txt3);line-height:1.6">© 2025 Olerato Mongwe. All rights reserved.</div>
+      <div style="font-size:10px;color:var(--txt4);margin-top:2px">Skilynt Thweft · Founder</div>
       <div style="display:flex;gap:10px;margin-top:14px;justify-content:center">
         <a href="https://wa.me/27676441700?text=Hi%20Olerato%2C%20I%20found%20a%20bug%20on%20Skilyx%3A%20"
            style="display:inline-flex;align-items:center;gap:6px;background:rgba(37,211,102,.1);border:1px solid rgba(37,211,102,.25);border-radius:20px;padding:8px 14px;text-decoration:none">
