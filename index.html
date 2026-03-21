@@ -451,7 +451,7 @@ select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=
 <div id="app">
 
 <!-- AUTH -->
-<div class="screen active" id="screen-auth" style="background:#0A0A0A;display:none;flex-direction:column;overflow:hidden;position:relative">
+<div class="screen active" id="screen-auth" class="screen active" style="background:#0A0A0A;flex-direction:column;overflow:hidden;position:relative">
   <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:50px 28px 20px;pointer-events:none">
     <div style="font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#C9922A;margin-bottom:8px">Local Dreams Made Possible</div>
     <div style="font-family:'Playfair Display',serif;font-size:52px;font-weight:900;color:#fff;letter-spacing:-.03em;line-height:1;margin-bottom:8px">Skil<span style="color:#C9922A">yx</span></div>
@@ -527,7 +527,7 @@ select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=
 
 <!-- ═══ HOME ═══ -->
 <!-- ═══ HOME ═══ -->
-<div class="screen" id="screen-home">
+<div class="screen" id="screen-home" class="screen">
   <!-- Dark editorial masthead -->
   <div class="hmast">
     <div class="hmast-top">
@@ -629,7 +629,7 @@ select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=
 </div>
 
 <!-- ═══ DETAIL ═══ -->
-<div class="screen" id="screen-detail">
+<div class="screen" id="screen-detail" class="screen">
   <div class="scroll" id="dscroll">
     <div class="di" id="dimg"></div>
     <div class="db">
@@ -658,7 +658,7 @@ select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=
 </div>
 
 <!-- ═══ CHAT LIST ═══ -->
-<div class="screen" id="screen-chat">
+<div class="screen" id="screen-chat" class="screen">
   <div class="topbar"><h1>Messages</h1>
     <div class="ib"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
   </div>
@@ -666,7 +666,7 @@ select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=
 </div>
 
 <!-- ═══ CHAT WINDOW ═══ -->
-<div class="screen" id="screen-chat-window">
+<div class="screen" id="screen-chat-window" class="screen">
   <div class="ch" id="cwh"></div>
   <div class="cpb" id="cwpb" style="display:none"></div>
   <div class="cmsg" id="cwm"></div>
@@ -677,7 +677,7 @@ select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=
 </div>
 
 <!-- ═══ SELL ═══ -->
-<div class="screen" id="screen-sell">
+<div class="screen" id="screen-sell" class="screen">
   <div class="topbar"><h1>List an Item</h1></div>
   <div class="scroll"><div class="sa2">
     <div class="iu" onclick="document.getElementById('imgfile').click()">
@@ -727,7 +727,7 @@ select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=
 </div>
 
 <!-- ═══ PAYMENT ═══ -->
-<div class="screen" id="screen-payment">
+<div class="screen" id="screen-payment" class="screen">
   <div class="topbar">
     <div class="bb" onclick="goBack()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div>
     <h1 style="font-size:19px">Checkout</h1>
@@ -746,7 +746,7 @@ select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=
 </div>
 
 <!-- ═══ ORDERS ═══ -->
-<div class="screen" id="screen-orders">
+<div class="screen" id="screen-orders" class="screen">
   <div class="topbar"><h1>My Orders</h1></div>
   <div class="scroll">
     <div style="display:flex;margin:14px 20px;border-radius:var(--rs);overflow:hidden;border:1px solid var(--b)">
@@ -758,7 +758,7 @@ select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=
 </div>
 
 <!-- ═══ NOTIFICATIONS ═══ -->
-<div class="screen" id="screen-notifications">
+<div class="screen" id="screen-notifications" class="screen">
   <div class="topbar">
     <div class="bb" onclick="goBack()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div>
     <h1>Notifications</h1>
@@ -767,7 +767,7 @@ select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=
 </div>
 
 <!-- ═══ PROFILE ═══ -->
-<div class="screen" id="screen-profile">
+<div class="screen" id="screen-profile" class="screen">
   <div class="scroll">
     <div class="pcover">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
@@ -874,7 +874,7 @@ select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=
 </div>
 
 <!-- ═══ ADMIN ═══ -->
-<div class="screen" id="screen-admin">
+<div class="screen" id="screen-admin" class="screen">
   <div class="acov">
     <div style="display:flex;align-items:center;gap:11px">
       <div class="bb" style="background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.14)" onclick="goBack()">
@@ -2299,7 +2299,7 @@ window.addEventListener('appinstalled', () => {
 </script>
 
 <!-- ═══ EDIT PROFILE ═══ -->
-<div class="screen" id="screen-edit-profile">
+<div class="screen" id="screen-edit-profile" class="screen">
   <div class="topbar">
     <div class="bb" onclick="goBack()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></div>
     <h1>Edit Profile</h1>
@@ -2410,9 +2410,20 @@ function closeDYK() {
   if (modal) modal.style.display = 'none';
 }
 
-// Close on backdrop tap
+// Wire DYK buttons
 document.addEventListener('DOMContentLoaded', function() {
   var modal = document.getElementById('dyk-modal');
+  var another = document.getElementById('dyk-another');
+  var close = document.getElementById('dyk-close');
+  
+  if (another) {
+    another.addEventListener('touchstart', function(e){ e.preventDefault(); showDYK(); }, {passive:false});
+    another.addEventListener('click', showDYK);
+  }
+  if (close) {
+    close.addEventListener('touchstart', function(e){ e.preventDefault(); closeDYK(); }, {passive:false});
+    close.addEventListener('click', closeDYK);
+  }
   if (modal) {
     modal.addEventListener('touchstart', function(e) {
       if (e.target === modal) { e.preventDefault(); closeDYK(); }
@@ -2614,5 +2625,19 @@ document.addEventListener('DOMContentLoaded', function() {
 })();
 </script>
 
+
+<!-- DYK MODAL -->
+<div id="dyk-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);z-index:400;align-items:flex-end;justify-content:center">
+  <div style="background:#141412;border-radius:24px 24px 0 0;padding:28px 24px 40px;width:100%;max-width:430px;border-top:1px solid #2E2E2C">
+    <div style="width:34px;height:3px;background:#333;border-radius:2px;margin:0 auto 22px"></div>
+    <div style="font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#C9922A;margin-bottom:14px">Did You Know? 💡</div>
+    <div id="dyk-text" style="font-family:'Playfair Display',serif;font-size:19px;font-weight:700;color:#E8E4DC;line-height:1.5;margin-bottom:8px"></div>
+    <div id="dyk-source" style="font-size:12px;color:#606060;margin-bottom:28px"></div>
+    <div style="display:flex;gap:10px">
+      <button id="dyk-another" style="flex:1;padding:14px;background:rgba(201,146,42,.12);border:1px solid rgba(201,146,42,.3);border-radius:12px;color:#C9922A;font-size:13px;font-weight:700;cursor:pointer;font-family:Outfit,sans-serif">Another one ✨</button>
+      <button id="dyk-close" style="flex:1;padding:14px;background:#1C1C1A;border:1px solid #2E2E2C;border-radius:12px;color:#A09C94;font-size:13px;font-weight:700;cursor:pointer;font-family:Outfit,sans-serif">Close</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
