@@ -59,7 +59,7 @@ html,body{height:100%;font-family:var(--fb);color:var(--ink);background:#0A0A0A;
 .fi::placeholder{color:var(--txt4)}
 textarea.fi{resize:none}
 select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237A7670' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
-.btn{width:100%;padding:15px;background:var(--ink);color:#fff;border:none;border-radius:var(--rs);font-family:var(--fb);font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.04em;text-transform:uppercase}
+.btn{width:100%;padding:15px;background:var(--ink);color:#fff;border:none;border-radius:var(--rs);font-family:var(--fb);font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.04em;text-transform:uppercase;-webkit-tap-highlight-color:transparent;touch-action:manipulation;position:relative;z-index:2}
 .btn:active{transform:scale(.97);background:#222}
 .btn:disabled{background:var(--ink4);cursor:not-allowed;transform:none}
 .btn-o{background:transparent;border:1.5px solid var(--ink);color:var(--ink)}
@@ -111,9 +111,9 @@ select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=
 .sell-fab svg{stroke:#fff!important;width:22px!important;height:22px!important}
 
 /* ── AUTH ── */
-#screen-auth{background:var(--ink);justify-content:flex-end}
-.ag{position:absolute;top:-60px;left:-60px;width:420px;height:420px;background:radial-gradient(circle,rgba(184,150,46,.12) 0%,transparent 70%);pointer-events:none}
-.at{position:relative;z-index:1;padding:60px 28px 32px;flex:1;display:flex;flex-direction:column;justify-content:flex-end}
+#screen-auth{background:var(--ink);justify-content:flex-end;overflow:hidden}
+.ag{position:absolute;top:-60px;left:-60px;width:420px;height:420px;background:radial-gradient(circle,rgba(184,150,46,.12) 0%,transparent 70%);pointer-events:none;z-index:0}
+.at{position:relative;z-index:0;padding:60px 28px 24px;flex:1;display:flex;flex-direction:column;justify-content:flex-end;pointer-events:none}
 .asl{font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-light, #E8B84B);margin-bottom:8px}
 .aw{font-family:var(--fh);font-size:52px;font-weight:900;color:#fff;letter-spacing:-.03em;line-height:1;margin-bottom:10px}
 .aw span{color:#B8962E}
@@ -383,19 +383,19 @@ select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=
 /* ── ONBOARDING / FREE ENTRY ── */
 .onb-screen{display:flex;flex-direction:column;flex:1;overflow:hidden;background:var(--ink)}
 .onb-top{position:relative;z-index:1;padding:60px 28px 28px;flex:1;display:flex;flex-direction:column;justify-content:flex-end}
-.onb-sheet{background:#141412;border-radius:26px 26px 0 0;padding:28px 26px max(28px,env(safe-area-inset-bottom));overflow-y:auto;position:relative;z-index:1}
+.onb-sheet{background:#141412;border-radius:26px 26px 0 0;padding:28px 26px max(28px,env(safe-area-inset-bottom));overflow-y:auto;position:relative;z-index:10;max-height:75vh}
 .onb-sheet::-webkit-scrollbar{display:none}
 .onb-title{font-family:var(--fh);font-size:20px;font-weight:700;color:var(--txt);margin-bottom:4px}
 .onb-sub{font-size:13px;color:var(--txt3);margin-bottom:22px;line-height:1.5}
 
 /* Avatar picker */
-.avatar-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px}
-.av-opt{aspect-ratio:1;border-radius:14px;background:var(--s2);border:2px solid var(--b);display:flex;align-items:center;justify-content:center;font-size:26px;cursor:pointer;transition:all .2s}
+.avatar-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px;position:relative;z-index:2}
+.av-opt{aspect-ratio:1;border-radius:14px;background:var(--s2);border:2px solid var(--b);display:flex;align-items:center;justify-content:center;font-size:26px;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:rgba(201,146,42,.2);user-select:none}
 .av-opt.sel{border-color:var(--gold);background:rgba(201,146,42,.12);transform:scale(1.08)}
 .av-opt:active{transform:scale(.95)}
 
 /* City picker */
-.city-grid{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.city-grid{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;position:relative;z-index:2}
 .city-opt{padding:8px 14px;border-radius:20px;background:var(--s2);border:1.5px solid var(--b);font-size:12px;font-weight:600;color:var(--txt2);cursor:pointer;transition:all .2s;letter-spacing:.02em}
 .city-opt.sel{background:rgba(201,146,42,.12);border-color:var(--gold);color:var(--gold)}
 
@@ -1051,23 +1051,34 @@ let _onbCity = '';
 const BLOCKED_NAMES = ['admin','skilyx','test','fake','asdf','null','undefined'];
 
 function onbStep(n) {
+  // Validate name only when moving FROM step 2 TO step 3
   if (n === 3) {
-    const name = (document.getElementById('onb-name').value||'').trim();
+    const nameEl = document.getElementById('onb-name');
+    const name = nameEl ? (nameEl.value||'').trim() : '';
     const hint = document.getElementById('hint-onb-name');
     if (name.length < 2) {
-      hint.textContent = 'Name must be at least 2 characters';
-      hint.className = 'field-hint err'; return;
+      if (hint) { hint.textContent = 'Enter at least 2 characters'; hint.className = 'field-hint err'; }
+      nameEl && nameEl.focus();
+      return;
     }
     if (BLOCKED_NAMES.some(b => name.toLowerCase() === b)) {
-      hint.textContent = 'Please use a real name or handle';
-      hint.className = 'field-hint err'; return;
+      if (hint) { hint.textContent = 'Please use a real name or handle'; hint.className = 'field-hint err'; }
+      return;
     }
   }
-  [1,2,3].forEach(i => {
+  // Show correct step, hide others
+  for (let i=1; i<=3; i++) {
     const el = document.getElementById('onb-'+i);
-    if (el) el.style.display = i===n ? 'block' : 'none';
-  });
-  if (n===2) document.getElementById('onb-av-preview').textContent = _onbAv;
+    if (el) el.style.display = (i === n) ? 'block' : 'none';
+  }
+  // Update avatar preview on step 2
+  if (n === 2) {
+    const prev = document.getElementById('onb-av-preview');
+    if (prev) prev.textContent = _onbAv;
+  }
+  // Scroll sheet to top
+  const sheet = document.getElementById('onb-'+n);
+  if (sheet) sheet.scrollTop = 0;
 }
 
 function pickAv(el, emoji) {
