@@ -462,88 +462,82 @@ select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=
 <div id="app">
 
 <!-- ═══ AUTH ═══ -->
-<div class="screen active" id="screen-auth" style="position:relative;overflow:hidden">
-  <!-- Background -->
-  <div class="ag" style="pointer-events:none;z-index:0"></div>
-  <!-- Top branding — pointer-events none so it never blocks taps -->
-  <div class="at" style="pointer-events:none;z-index:0">
-    <div class="asl">Local Dreams Made Possible</div>
-    <div class="aw">Skil<span>yx</span></div>
-    <div style="font-family:var(--fb);font-size:10px;font-weight:600;color:rgba(255,255,255,.55);letter-spacing:.16em;text-transform:uppercase;margin-top:5px;margin-bottom:10px">by Olerato Mongwe</div>
-    <div class="atag">"Where every local dream<br>finds its market."</div>
+<div class="screen active" id="screen-auth" style="background:#0A0A0A;display:flex;flex-direction:column;overflow:hidden;position:relative">
+
+  <!-- Branding -->
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:50px 28px 20px;pointer-events:none;min-height:0">
+    <div style="font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#C9922A;margin-bottom:8px">Local Dreams Made Possible</div>
+    <div style="font-family:'Playfair Display',serif;font-size:52px;font-weight:900;color:#fff;letter-spacing:-.03em;line-height:1;margin-bottom:8px">Skil<span style="color:#C9922A">yx</span></div>
+    <div style="font-size:10px;font-weight:600;color:rgba(255,255,255,.55);letter-spacing:.16em;text-transform:uppercase;margin-bottom:10px">by Olerato Mongwe</div>
+    <div style="font-family:'Playfair Display',serif;font-style:italic;font-size:15px;color:rgba(255,255,255,.55)">"Where every local dream finds its market."</div>
   </div>
 
-  <!-- STEP 1 — Pick avatar — sits on top with high z-index -->
-  <div id="onb-1" style="position:absolute;bottom:0;left:0;right:0;background:#141412;border-radius:24px 24px 0 0;padding:24px 24px max(24px,env(safe-area-inset-bottom));z-index:50;max-height:72vh;overflow-y:auto">
-    <div style="width:34px;height:3px;background:#333;border-radius:2px;margin:0 auto 20px"></div>
-    <div class="onb-title">Pick your avatar</div>
-    <div class="onb-sub">No email. No password. Just pick who you are and start trading.</div>
-    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px;position:relative;z-index:2" id="av-grid">
-      <div class="av-opt sel" onclick="pickAv(this,'🦁')">🦁</div>
-      <div class="av-opt" onclick="pickAv(this,'🐯')">🐯</div>
-      <div class="av-opt" onclick="pickAv(this,'🦊')">🦊</div>
-      <div class="av-opt" onclick="pickAv(this,'🦋')">🦋</div>
-      <div class="av-opt" onclick="pickAv(this,'🌙')">🌙</div>
-      <div class="av-opt" onclick="pickAv(this,'⚡')">⚡</div>
-      <div class="av-opt" onclick="pickAv(this,'🌊')">🌊</div>
-      <div class="av-opt" onclick="pickAv(this,'🔥')">🔥</div>
-      <div class="av-opt" onclick="pickAv(this,'💎')">💎</div>
-      <div class="av-opt" onclick="pickAv(this,'🌿')">🌿</div>
-      <div class="av-opt" onclick="pickAv(this,'🎯')">🎯</div>
-      <div class="av-opt" onclick="pickAv(this,'🚀')">🚀</div>
-      <div class="av-opt" onclick="pickAv(this,'🎭')">🎭</div>
-      <div class="av-opt" onclick="pickAv(this,'🌸')">🌸</div>
-      <div class="av-opt" onclick="pickAv(this,'👑')">👑</div>
+  <!-- STEP 1: Avatar — fixed height so button always visible -->
+  <div id="onb-1" style="background:#141412;border-radius:24px 24px 0 0;padding:20px 22px max(20px,env(safe-area-inset-bottom));flex-shrink:0">
+    <div style="width:34px;height:3px;background:#333;border-radius:2px;margin:0 auto 16px"></div>
+    <div style="font-family:'Playfair Display',serif;font-size:19px;font-weight:700;color:#E8E4DC;margin-bottom:4px">Pick your avatar</div>
+    <div style="font-size:12px;color:#606060;margin-bottom:14px">No email. No password. Just pick who you are and start trading.</div>
+    <div id="av-grid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:16px">
+      <div id="av-lion"      style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #C9922A;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer">🦁</div>
+      <div id="av-tiger"     style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer">🐯</div>
+      <div id="av-fox"       style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer">🦊</div>
+      <div id="av-butterfly" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer">🦋</div>
+      <div id="av-moon"      style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer">🌙</div>
+      <div id="av-bolt"      style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer">⚡</div>
+      <div id="av-wave"      style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer">🌊</div>
+      <div id="av-fire"      style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer">🔥</div>
+      <div id="av-diamond"   style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer">💎</div>
+      <div id="av-leaf"      style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer">🌿</div>
+      <div id="av-target"    style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer">🎯</div>
+      <div id="av-rocket"    style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer">🚀</div>
+      <div id="av-masks"     style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer">🎭</div>
+      <div id="av-flower"    style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer">🌸</div>
+      <div id="av-crown"     style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer">👑</div>
     </div>
-    <button onclick="onbStep(2)" ontouchend="event.preventDefault();onbStep(2)" style="width:100%;padding:16px;background:#C9922A;color:#fff;border:none;border-radius:12px;font-family:var(--fb);font-size:15px;font-weight:800;cursor:pointer;letter-spacing:.05em;text-transform:uppercase;position:relative;z-index:2;touch-action:manipulation">NEXT →</button>
+    <button id="next1-btn" style="width:100%;padding:16px;background:#C9922A;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;display:block;cursor:pointer">NEXT →</button>
   </div>
 
-  <!-- STEP 2 — Name -->
-  <div id="onb-2" style="display:none;position:absolute;bottom:0;left:0;right:0;background:#141412;border-radius:24px 24px 0 0;padding:24px 24px max(24px,env(safe-area-inset-bottom));z-index:50;max-height:72vh;overflow-y:auto">
-    <div style="width:34px;height:3px;background:#333;border-radius:2px;margin:0 auto 20px"></div>
-    <div style="font-size:44px;text-align:center;margin-bottom:14px" id="onb-av-preview">🦁</div>
-    <div class="onb-title">What do people call you?</div>
-    <div class="onb-sub">A name or handle — buyers and sellers will see this.</div>
-    <div style="margin-bottom:16px">
-      <label class="fl">Your Name</label>
-      <input class="fi" id="onb-name" type="text" placeholder="e.g. Olerato or OleratoJHB"
-        autocomplete="nickname" maxlength="30"
-        oninput="checkOnbName(this)"
-        onkeydown="if(event.key==='Enter')onbStep(3)"
-        style="width:100%">
-      <div style="display:flex;justify-content:space-between;margin-top:5px">
-        <div class="field-hint" id="hint-onb-name"></div>
-        <span style="font-size:11px;color:var(--txt3)" id="onb-name-count">0/30</span>
-      </div>
+  <!-- STEP 2: Name -->
+  <div id="onb-2" style="display:none;background:#141412;border-radius:24px 24px 0 0;padding:24px 22px max(24px,env(safe-area-inset-bottom));flex-shrink:0">
+    <div style="width:34px;height:3px;background:#333;border-radius:2px;margin:0 auto 18px"></div>
+    <div id="onb-av-preview" style="font-size:44px;text-align:center;margin-bottom:12px">🦁</div>
+    <div style="font-family:'Playfair Display',serif;font-size:19px;font-weight:700;color:#E8E4DC;margin-bottom:4px">What do people call you?</div>
+    <div style="font-size:12px;color:#606060;margin-bottom:18px">A name or handle — buyers and sellers will see this.</div>
+    <div style="margin-bottom:18px">
+      <div style="font-size:11px;font-weight:700;color:#A09C94;text-transform:uppercase;letter-spacing:.09em;margin-bottom:7px">Your Name</div>
+      <input id="onb-name" type="text" maxlength="30" placeholder="e.g. Olerato or OleratoJHB"
+        style="width:100%;background:#202020;border:1.5px solid #303030;border-radius:11px;padding:13px 16px;color:#E8E4DC;font-size:15px;outline:none;box-sizing:border-box;font-family:Outfit,sans-serif">
+      <div id="hint-onb-name" style="font-size:11px;margin-top:5px;min-height:16px;color:#606060"></div>
     </div>
-    <button onclick="onbStep(3)" ontouchend="event.preventDefault();onbStep(3)" style="width:100%;padding:16px;background:#C9922A;color:#fff;border:none;border-radius:12px;font-family:var(--fb);font-size:15px;font-weight:800;cursor:pointer;letter-spacing:.05em;text-transform:uppercase;margin-bottom:10px;touch-action:manipulation">NEXT →</button>
-    <button onclick="onbStep(1)" style="width:100%;padding:12px;background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;font-size:13px;font-family:var(--fb);touch-action:manipulation">← Back</button>
+    <button id="next2-btn" style="width:100%;padding:16px;background:#C9922A;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;display:block;cursor:pointer">NEXT →</button>
+    <button id="back1-btn" style="width:100%;padding:12px;background:none;border:none;color:#606060;font-size:13px;font-family:Outfit,sans-serif;cursor:pointer">← Back</button>
   </div>
 
-  <!-- STEP 3 — City -->
-  <div id="onb-3" style="display:none;position:absolute;bottom:0;left:0;right:0;background:#141412;border-radius:24px 24px 0 0;padding:24px 24px max(24px,env(safe-area-inset-bottom));z-index:50;max-height:72vh;overflow-y:auto">
-    <div style="width:34px;height:3px;background:#333;border-radius:2px;margin:0 auto 20px"></div>
-    <div class="onb-title">Where are you based?</div>
-    <div class="onb-sub">Helps people find deals near them.</div>
-    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px" id="city-grid">
-      <div class="city-opt" onclick="pickCity(this,'Johannesburg')">Johannesburg</div>
-      <div class="city-opt" onclick="pickCity(this,'Cape Town')">Cape Town</div>
-      <div class="city-opt" onclick="pickCity(this,'Durban')">Durban</div>
-      <div class="city-opt" onclick="pickCity(this,'Pretoria')">Pretoria</div>
-      <div class="city-opt" onclick="pickCity(this,'Port Elizabeth')">Port Elizabeth</div>
-      <div class="city-opt" onclick="pickCity(this,'Bloemfontein')">Bloemfontein</div>
-      <div class="city-opt" onclick="pickCity(this,'Soweto')">Soweto</div>
-      <div class="city-opt" onclick="pickCity(this,'Sandton')">Sandton</div>
-      <div class="city-opt" onclick="pickCity(this,'Midrand')">Midrand</div>
-      <div class="city-opt" onclick="pickCity(this,'East London')">East London</div>
-      <div class="city-opt" onclick="pickCity(this,'Centurion')">Centurion</div>
-      <div class="city-opt" onclick="pickCity(this,'Other')">Other</div>
+  <!-- STEP 3: City -->
+  <div id="onb-3" style="display:none;background:#141412;border-radius:24px 24px 0 0;padding:20px 22px max(20px,env(safe-area-inset-bottom));max-height:70vh;overflow-y:auto;flex-shrink:0">
+    <div style="width:34px;height:3px;background:#333;border-radius:2px;margin:0 auto 16px"></div>
+    <div style="font-family:'Playfair Display',serif;font-size:19px;font-weight:700;color:#E8E4DC;margin-bottom:4px">Where are you based?</div>
+    <div style="font-size:12px;color:#606060;margin-bottom:16px">Helps people find deals near them.</div>
+    <div id="city-grid" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px">
+      <div class="city-opt" data-city="Johannesburg"  style="padding:8px 14px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">Johannesburg</div>
+      <div class="city-opt" data-city="Cape Town"     style="padding:8px 14px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">Cape Town</div>
+      <div class="city-opt" data-city="Durban"        style="padding:8px 14px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">Durban</div>
+      <div class="city-opt" data-city="Pretoria"      style="padding:8px 14px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">Pretoria</div>
+      <div class="city-opt" data-city="Port Elizabeth" style="padding:8px 14px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">Port Elizabeth</div>
+      <div class="city-opt" data-city="Bloemfontein"  style="padding:8px 14px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">Bloemfontein</div>
+      <div class="city-opt" data-city="Soweto"        style="padding:8px 14px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">Soweto</div>
+      <div class="city-opt" data-city="Sandton"       style="padding:8px 14px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">Sandton</div>
+      <div class="city-opt" data-city="Midrand"       style="padding:8px 14px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">Midrand</div>
+      <div class="city-opt" data-city="East London"   style="padding:8px 14px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">East London</div>
+      <div class="city-opt" data-city="Centurion"     style="padding:8px 14px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">Centurion</div>
+      <div class="city-opt" data-city="Other"         style="padding:8px 14px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">Other</div>
     </div>
-    <div id="city-other-wrap" style="display:none;margin-bottom:16px">
-      <input class="fi" id="city-other" placeholder="Type your city…" style="width:100%">
+    <div id="city-other-wrap" style="display:none;margin-bottom:14px">
+      <input id="city-other" type="text" placeholder="Type your city…"
+        style="width:100%;background:#202020;border:1.5px solid #303030;border-radius:11px;padding:13px 16px;color:#E8E4DC;font-size:15px;outline:none;box-sizing:border-box">
     </div>
-    <button onclick="finishOnboarding()" ontouchend="event.preventDefault();finishOnboarding()" style="width:100%;padding:16px;background:#0A0A0A;color:#fff;border:none;border-radius:12px;font-family:var(--fb);font-size:15px;font-weight:800;cursor:pointer;letter-spacing:.05em;text-transform:uppercase;margin-bottom:10px;touch-action:manipulation">ENTER SKILYX →</button>
-    <button onclick="onbStep(2)" style="width:100%;padding:12px;background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;font-size:13px;font-family:var(--fb);touch-action:manipulation">← Back</button>
+    <button id="finish-btn" style="width:100%;padding:16px;background:#0A0A0A;color:#fff;border:1.5px solid #2E2E2C;border-radius:12px;font-size:15px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;display:block;cursor:pointer">ENTER SKILYX →</button>
+    <button id="back2-btn" style="width:100%;padding:12px;background:none;border:none;color:#606060;font-size:13px;font-family:Outfit,sans-serif;cursor:pointer">← Back</button>
   </div>
 </div>
 
@@ -1043,6 +1037,193 @@ function authTab(t) {
 }
 
 function showErr(m) { const e=document.getElementById('aerr'); e.textContent=m; e.style.display='block'; }
+function hideErr()  { document.getElementById('aerr').style.display='none'; }
+
+// ══════════════════════════════════════════════════════════════
+//  OPEN ONBOARDING — No email, no password, no OTP
+//  Anyone enters freely. Reputation is everything.
+// ══════════════════════════════════════════════════════════════
+
+let _onbAv   = '🦁';
+let _onbCity = '';
+const BLOCKED_NAMES = ['admin','skilyx','test','fake','asdf','null','undefined'];
+
+// ══════════════════════════════════════════════════════════════
+//  ONBOARDING — Pure addEventListener, no onclick dependency
+// ══════════════════════════════════════════════════════════════
+
+let _onbAv   = '🦁';
+let _onbCity = '';
+const BLOCKED_NAMES = ['admin','skilyx','test','fake','asdf','null','undefined'];
+
+// Avatar map
+const AV_MAP = {
+  'av-lion':'🦁','av-tiger':'🐯','av-fox':'🦊','av-butterfly':'🦋',
+  'av-moon':'🌙','av-bolt':'⚡','av-wave':'🌊','av-fire':'🔥',
+  'av-diamond':'💎','av-leaf':'🌿','av-target':'🎯','av-rocket':'🚀',
+  'av-masks':'🎭','av-flower':'🌸','av-crown':'👑'
+};
+
+function initOnboarding() {
+  // Avatar selection
+  Object.entries(AV_MAP).forEach(([id, emoji]) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('click', () => selectAvatar(id, emoji));
+    el.addEventListener('touchend', (e) => { e.preventDefault(); selectAvatar(id, emoji); });
+  });
+
+  // Next button step 1
+  const n1 = document.getElementById('next1-btn');
+  if (n1) {
+    n1.addEventListener('click', () => goStep(2));
+    n1.addEventListener('touchend', (e) => { e.preventDefault(); goStep(2); });
+  }
+
+  // Next button step 2
+  const n2 = document.getElementById('next2-btn');
+  if (n2) {
+    n2.addEventListener('click', () => goStep(3));
+    n2.addEventListener('touchend', (e) => { e.preventDefault(); goStep(3); });
+  }
+
+  // Back buttons
+  const b1 = document.getElementById('back1-btn');
+  if (b1) {
+    b1.addEventListener('click', () => goStep(1));
+    b1.addEventListener('touchend', (e) => { e.preventDefault(); goStep(1); });
+  }
+  const b2 = document.getElementById('back2-btn');
+  if (b2) {
+    b2.addEventListener('click', () => goStep(2));
+    b2.addEventListener('touchend', (e) => { e.preventDefault(); goStep(2); });
+  }
+
+  // Finish button
+  const fb = document.getElementById('finish-btn');
+  if (fb) {
+    fb.addEventListener('click', finishOnboarding);
+    fb.addEventListener('touchend', (e) => { e.preventDefault(); finishOnboarding(); });
+  }
+
+  // City options
+  document.querySelectorAll('.city-opt').forEach(el => {
+    const city = el.getAttribute('data-city') || el.textContent.trim();
+    el.addEventListener('click', () => selectCity(el, city));
+    el.addEventListener('touchend', (e) => { e.preventDefault(); selectCity(el, city); });
+  });
+
+  // Name input
+  const ni = document.getElementById('onb-name');
+  if (ni) ni.addEventListener('input', () => checkOnbName(ni));
+}
+
+function selectAvatar(id, emoji) {
+  Object.keys(AV_MAP).forEach(avId => {
+    const el = document.getElementById(avId);
+    if (el) el.style.border = '2px solid #333';
+  });
+  const sel = document.getElementById(id);
+  if (sel) sel.style.border = '2px solid #C9922A';
+  _onbAv = emoji;
+}
+
+function selectCity(el, city) {
+  document.querySelectorAll('.city-opt').forEach(c => {
+    c.style.border = '1.5px solid #333';
+    c.style.color = '#A09C94';
+    c.style.background = '#222';
+  });
+  el.style.border = '1.5px solid #C9922A';
+  el.style.color = '#C9922A';
+  el.style.background = 'rgba(201,146,42,.1)';
+  _onbCity = city;
+  const ow = document.getElementById('city-other-wrap');
+  if (ow) ow.style.display = city === 'Other' ? 'block' : 'none';
+}
+
+// Keep old names as aliases for any remaining onclick refs
+function pickAv(el, emoji) { _onbAv = emoji; }
+function pickCity(el, city) { _onbCity = city; }
+
+function goStep(n) {
+  if (n === 3) {
+    const nameEl = document.getElementById('onb-name');
+    const name = nameEl ? nameEl.value.trim() : '';
+    const hint = document.getElementById('hint-onb-name');
+    if (name.length < 2) {
+      if (hint) { hint.textContent = 'Enter at least 2 characters'; hint.style.color = '#E74C3C'; }
+      if (nameEl) nameEl.focus();
+      return;
+    }
+  }
+  for (let i=1; i<=3; i++) {
+    const el = document.getElementById('onb-'+i);
+    if (el) el.style.display = i===n ? 'block' : 'none';
+  }
+  if (n===2) {
+    const prev = document.getElementById('onb-av-preview');
+    if (prev) prev.textContent = _onbAv;
+  }
+}
+
+// Keep onbStep as alias
+function onbStep(n) { goStep(n); }
+
+function checkOnbName(input) {
+  const val = input.value.trim();
+  const hint = document.getElementById('hint-onb-name');
+  if (!hint) return;
+  if (!val) { hint.textContent = ''; return; }
+  if (val.length < 2) { hint.style.color='#E8B84B'; hint.textContent='Keep going…'; return; }
+  if (BLOCKED_NAMES.some(b=>val.toLowerCase()===b)) {
+    hint.style.color='#E74C3C'; hint.textContent='Please use a real name'; return;
+  }
+  hint.style.color='#27AE60'; hint.textContent='✓ Looks good';
+}
+
+function finishOnboarding() {
+  const nameEl = document.getElementById('onb-name');
+  const name = nameEl ? nameEl.value.trim() : '';
+  if (!name || name.length < 2) { goStep(2); return; }
+
+  let city = _onbCity;
+  if (city === 'Other') {
+    const oc = document.getElementById('city-other');
+    city = oc ? (oc.value.trim() || 'South Africa') : 'South Africa';
+  }
+  if (!city) { showToast('Please pick your city', 'err'); return; }
+
+  const users = DB.all('users');
+  let finalName = name;
+  if (users.find(u => u.name.toLowerCase() === name.toLowerCase())) {
+    finalName = name + (Math.floor(Math.random()*900)+100);
+    showToast('Name taken — registered as '+finalName);
+  }
+  createProfile(finalName, city);
+}
+
+function createProfile(name, city) {
+  const users = DB.all('users');
+  const user = {
+    id:uid(), name, avatar:_onbAv, city,
+    role: users.length===0 ? 'admin' : 'user',
+    ratingAvg:0, ratingCount:0,
+    ratingAsSeller:0, countAsSeller:0,
+    ratingAsBuyer:0, countAsBuyer:0,
+    totalTrades:0, wallet:0, listings:0, sales:0,
+    is_suspended:false, joinedAt:new Date().toISOString()
+  };
+  DB.push('users', user);
+  DB.set('session', user.id);
+  CU = user;
+  afterLogin();
+  showToast('Welcome to Skilyx, '+name+'! 🖤', 'ok');
+}
+
+function initOnbTouchHandlers() { initOnboarding(); }
+
+function showErr(m) {function showErr(m) { const e=document.getElementById('aerr'); e.textContent=m; e.style.display='block'; }
 function hideErr()  { document.getElementById('aerr').style.display='none'; }
 
 // ══════════════════════════════════════════════════════════════
@@ -2336,6 +2517,8 @@ window.addEventListener('DOMContentLoaded', ()=>{
 
   // ── Wipe all demo data on first launch of this version ──
   clearDemoData();
+  setTimeout(initOnboarding, 100);
+  
   // ── Handle incoming deep links (shared listing links) ──
   setTimeout(handleDeepLink, 800);
 
