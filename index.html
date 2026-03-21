@@ -850,6 +850,25 @@ select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=
         <div class="marr"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
       </div>
     </div>
+
+    <!-- Copyright -->
+    <div style="padding:22px 22px 8px;text-align:center;border-top:1px solid var(--b);margin-top:8px">
+      <div style="font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--txt);letter-spacing:-.01em;margin-bottom:5px">Skil<span style="color:#C9922A">yx</span>™</div>
+      <div style="font-size:11px;color:var(--txt3);line-height:1.6">© 2025 Olerato Mongwe. All rights reserved.</div>
+      <div style="display:flex;gap:10px;margin-top:14px;justify-content:center">
+        <a href="https://wa.me/27676441700?text=Hi%20Olerato%2C%20I%20found%20a%20bug%20on%20Skilyx%3A%20"
+           style="display:inline-flex;align-items:center;gap:6px;background:rgba(37,211,102,.1);border:1px solid rgba(37,211,102,.25);border-radius:20px;padding:8px 14px;text-decoration:none">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.126 1.532 5.856L.057 23.882l6.198-1.448A11.934 11.934 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.001-1.373l-.36-.214-3.68.860.875-3.593-.234-.371A9.818 9.818 0 1112 21.818z"/></svg>
+          <span style="font-size:12px;font-weight:600;color:#25D366">Report Bug</span>
+        </a>
+        <a href="https://wa.me/27676441700?text=Hi%20Olerato%2C%20I%20have%20a%20suggestion%20for%20Skilyx%3A%20"
+           style="display:inline-flex;align-items:center;gap:6px;background:rgba(201,146,42,.1);border:1px solid rgba(201,146,42,.25);border-radius:20px;padding:8px 14px;text-decoration:none">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="#C9922A"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.126 1.532 5.856L.057 23.882l6.198-1.448A11.934 11.934 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.001-1.373l-.36-.214-3.68.860.875-3.593-.234-.371A9.818 9.818 0 1112 21.818z"/></svg>
+          <span style="font-size:12px;font-weight:600;color:#C9922A">Suggest Feature</span>
+        </a>
+      </div>
+      <div style="margin-top:10px;font-size:10px;color:var(--txt4);letter-spacing:.06em;text-transform:uppercase">v1.0 · Built in South Africa 🇿🇦</div>
+    </div>
     <div style="height:18px"></div>
   </div>
 </div>
@@ -971,7 +990,10 @@ function showToast(msg, type='info') {
 
 // ── NAV ─────────────────────────────────────────────────────────
 const NONAV = ['auth','chat-window','payment','admin','notifications'];
-function nav(s, data={}) { SH.push(CS); CS = s; showS(s, data); }
+function nav(s, data={}) {
+  if (!CU && window.CU) CU = window.CU;
+  SH.push(CS); CS = s; showS(s, data);
+}
 function goBack() { if (SH.length) { CS=SH.pop(); showS(CS); } }
 
 function showS(s, data={}) {
@@ -979,6 +1001,7 @@ function showS(s, data={}) {
   const el = document.getElementById('screen-'+s);
   if (el) el.classList.add('active');
 
+  if (!CU && window.CU) CU = window.CU;
   const bn = document.getElementById('bnav');
   bn.style.display = CU && !NONAV.includes(s) ? 'block' : 'none';
 
@@ -2456,6 +2479,11 @@ window.addEventListener('appinstalled', () => {
     if (typeof CU !== 'undefined') { try { CU = user; } catch(e){} }
 
     // ── DIRECT TRANSITION — no reload ──
+
+    // Set CU in every possible scope so main JS can find it
+    window.CU = user;
+    try { CU = user; } catch(e) {}
+
     var authEl = document.getElementById('screen-auth');
     var homeEl = document.getElementById('screen-home');
     var bnavEl = document.getElementById('bnav');
@@ -2469,19 +2497,29 @@ window.addEventListener('appinstalled', () => {
     // Show nav
     if (bnavEl) bnavEl.style.display='block';
 
+    // Set active nav item
+    var nhome = document.getElementById('n-home');
+    if (nhome) nhome.classList.add('active');
+
     // Admin check
     if (user.role==='admin') {
       var am=document.getElementById('admmi'); if(am) am.style.display='flex';
       var al=document.getElementById('admlnk'); if(al) al.style.display='flex';
     }
 
-    // Load home content
-    if (typeof renderListings === 'function') { renderListings(true); }
-    if (typeof renderProfile === 'function') { renderProfile(); }
-
     // Update city display
     var hcity = document.getElementById('hcity');
     if (hcity) hcity.textContent = c;
+
+    // Give main JS 100ms to see window.CU then load content
+    setTimeout(function() {
+      // Force CU into main scope again
+      try { CU = window.CU; } catch(e) {}
+      if (typeof renderListings === 'function') { renderListings(true); }
+      if (typeof renderProfile === 'function') { renderProfile(); }
+      // Set current screen so nav works
+      try { CS = 'home'; } catch(e) {}
+    }, 100);
   });
 
   // Name input live hint
