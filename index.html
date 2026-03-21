@@ -1621,21 +1621,53 @@ function sendMsg() {
 // ══════════════════════════════════════════════════════════════
 //  SELL
 // ══════════════════════════════════════════════════════════════
+// ── CLOUDINARY CONFIG ──────────────────────────────────────────
+const CLOUD = {
+  name:      'dncyx9keg',
+  uploadPreset: 'skilyx_unsigned', // create this in Cloudinary dashboard
+  apiKey:    '739858596181962',
+};
+
+// Store selected files globally for upload on publish
+let _selectedFiles = [];
+let _uploadedUrls  = [];
+
 function previewImgs(input) {
   const files = Array.from(input.files).slice(0,8);
+  _selectedFiles = files;
+  _uploadedUrls  = [];
   const row = document.getElementById('iprow');
   row.innerHTML=''; row.style.display = files.length?'flex':'none';
   files.forEach(f=>{
     const reader = new FileReader();
     reader.onload = e => {
+      const wrap = document.createElement('div');
+      wrap.style.cssText = 'position:relative;display:inline-block';
       const img = document.createElement('img');
-      img.className='ipv'; img.src=e.target.result; row.appendChild(img);
+      img.className='ipv'; img.src=e.target.result;
+      wrap.appendChild(img);
+      row.appendChild(wrap);
     };
     reader.readAsDataURL(f);
   });
 }
 
-function publishListing() {
+async function uploadToCloudinary(file) {
+  const url = 'https://api.cloudinary.com/v1_1/' + CLOUD.name + '/image/upload';
+  const form = new FormData();
+  form.append('file', file);
+  form.append('upload_preset', CLOUD.uploadPreset);
+  form.append('folder', 'skilyx/listings');
+  // Resize to max 900px and convert to webp for speed
+  form.append('transformation', 'w_900,h_900,c_limit,q_auto,f_webp');
+
+  const res = await fetch(url, {method:'POST', body:form});
+  if (!res.ok) throw new Error('Upload failed');
+  const data = await res.json();
+  return data.secure_url;
+}
+
+async function publishListing() {
   const title = document.getElementById('stitle').value.trim();
   const price = document.getElementById('sprice').value;
   const cat   = document.getElementById('scat').value;
@@ -1644,11 +1676,33 @@ function publishListing() {
   if (!price)  { showToast('Please set a price','err'); return; }
   if (!cat)    { showToast('Please select a category','err'); return; }
 
+  const btn = document.getElementById('pbtn');
+  btn.disabled = true;
+
   const catEmojis = {'phones-tablets':'📱','furniture':'🛋️','fashion':'👗','vehicles':'🚗','gaming':'🎮','electronics':'📺','services':'🛠️','sport':'⚽','kids':'🧸'};
 
-  // Get first preview image if any
-  const ipv = document.querySelector('.ipv');
-  const image = ipv ? ipv.src : null;
+  // ── Upload photos to Cloudinary ──
+  let primaryImage = null;
+  let allImages    = [];
+
+  if (_selectedFiles.length > 0) {
+    btn.textContent = 'Uploading photos…';
+    try {
+      // Upload all images in parallel
+      const urls = await Promise.all(_selectedFiles.map(f => uploadToCloudinary(f)));
+      primaryImage = urls[0];
+      allImages    = urls;
+      showToast('📸 ' + urls.length + ' photo' + (urls.length>1?'s':'') + ' uploaded','ok');
+    } catch(e) {
+      // If Cloudinary upload fails, fall back to local base64
+      console.warn('Cloudinary upload failed, using local preview:', e.message);
+      const ipv = document.querySelector('.ipv');
+      primaryImage = ipv ? ipv.src : null;
+      showToast('Photos saved locally — connect to server for cloud storage');
+    }
+  }
+
+  btn.textContent = 'Publishing…';
 
   const listing = {
     id:uid(), title, price:parseFloat(price),
@@ -1656,7 +1710,7 @@ function publishListing() {
     city:city||(CU?.city||'South Africa'),
     description:document.getElementById('sdesc').value.trim(),
     condition:document.getElementById('scond').value,
-    sellerId:CU.id, sellerName:CU.name,
+    sellerId:CU.id, sellerName:CU.name, sellerAvatar:CU.avatar||'👤',
     sellerRating:CU.ratingAvg||0, sellerSales:CU.sales||0,
     verified:CU.is_verified||false,
     allowsMeetup:document.getElementById('tmeet').classList.contains('on'),
@@ -1664,7 +1718,9 @@ function publishListing() {
     allowsPickup:document.getElementById('tpick').classList.contains('on'),
     acceptsCash:document.getElementById('tcash').classList.contains('on'),
     acceptsOnline:document.getElementById('tonl').classList.contains('on'),
-    image, views:0, saves:0,
+    image: primaryImage,
+    images: allImages,
+    views:0, saves:0,
     createdAt:new Date().toISOString()
   };
 
@@ -1680,7 +1736,10 @@ function publishListing() {
   document.getElementById('scat').value='';
   document.getElementById('iprow').innerHTML='';
   document.getElementById('iprow').style.display='none';
+  _selectedFiles=[]; _uploadedUrls=[];
 
+  btn.textContent = 'Publish Listing';
+  btn.disabled = false;
   showToast('🎉 Listing is live!','ok');
   nav('home');
 }
