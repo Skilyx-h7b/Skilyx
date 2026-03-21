@@ -448,10 +448,18 @@ select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=
 </style>
 </head>
 <body>
+<!-- DEBUG PANEL -->
+<div id="debug-panel" style="display:none;position:fixed;top:0;left:0;right:0;background:rgba(201,146,42,.95);color:#000;font-size:11px;padding:8px 12px;z-index:9999;font-family:monospace;word-break:break-all"></div>
+<!-- Loading splash — shows instantly, hidden after JS runs -->
+<div id="splash" style="position:fixed;inset:0;background:#0A0A0A;z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center">
+  <div style="font-family:'Playfair Display',serif;font-size:48px;font-weight:900;color:#fff;letter-spacing:-.03em">Skil<span style="color:#C9922A">yx</span></div>
+  <div style="width:40px;height:2px;background:#C9922A;margin-top:20px;border-radius:2px;animation:pulse 1s infinite"></div>
+</div>
+<style>@keyframes pulse{0%,100%{opacity:.3;transform:scaleX(.5)}50%{opacity:1;transform:scaleX(1)}}</style>
 <div id="app">
 
 <!-- AUTH -->
-<div id="screen-auth" class="screen active" style="background:#0A0A0A;flex-direction:column;overflow:hidden;position:relative">
+<div id="screen-auth" class="screen" style="background:#0A0A0A;flex-direction:column;overflow:hidden;position:relative">
   <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:50px 28px 20px;pointer-events:none">
     <div style="font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#C9922A;margin-bottom:8px">Local Dreams Made Possible</div>
     <div style="font-family:'Playfair Display',serif;font-size:52px;font-weight:900;color:#fff;letter-spacing:-.03em;line-height:1;margin-bottom:8px">Skil<span style="color:#C9922A">yx</span></div>
@@ -1779,6 +1787,7 @@ function renderProfile() {
 
   document.getElementById('hcity').textContent = CU.city||'Johannesburg';
   document.getElementById('pname').textContent = CU.name||'User';
+  document.getElementById('pav').textContent   = CU.avatar||'👤';
   document.getElementById('phan').textContent  = `@${(CU.name||'user').toLowerCase().replace(/\s/g,'_')} · ${CU.city||'SA'}`;
   document.getElementById('ps-l').textContent  = listings.length;
   document.getElementById('ps-s').textContent  = sold;
@@ -2147,6 +2156,22 @@ window.addEventListener('hashchange',handleDeepLink);
 
 
 window.addEventListener('DOMContentLoaded', function() {
+  // ── Hide splash ──
+  var splash = document.getElementById('splash');
+  if (splash) splash.style.display = 'none';
+
+  // ── DEBUG: show what's in localStorage ──
+  var sk_session = localStorage.getItem('sk_session');
+  var sk_users   = localStorage.getItem('sk_users');
+  var debug = document.getElementById('debug-panel');
+  if (debug) {
+    debug.innerHTML = 
+      '<b>sk_session:</b> ' + (sk_session||'NULL') + '<br>' +
+      '<b>sk_users:</b> ' + (sk_users ? sk_users.slice(0,80)+'...' : 'NULL');
+    debug.style.display = 'block';
+    setTimeout(function(){ debug.style.display='none'; }, 8000);
+  }
+
   // ── Demo data wipe ──
   clearDemoData();
   // ── Deep links ──
