@@ -451,7 +451,7 @@ select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=
 <div id="app">
 
 <!-- AUTH -->
-<div class="screen active" id="screen-auth" class="screen active" style="background:#0A0A0A;flex-direction:column;overflow:hidden;position:relative">
+<div id="screen-auth" class="screen active" style="background:#0A0A0A;flex-direction:column;overflow:hidden;position:relative">
   <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:50px 28px 20px;pointer-events:none">
     <div style="font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#C9922A;margin-bottom:8px">Local Dreams Made Possible</div>
     <div style="font-family:'Playfair Display',serif;font-size:52px;font-weight:900;color:#fff;letter-spacing:-.03em;line-height:1;margin-bottom:8px">Skil<span style="color:#C9922A">yx</span></div>
@@ -527,7 +527,7 @@ select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=
 
 <!-- ═══ HOME ═══ -->
 <!-- ═══ HOME ═══ -->
-<div class="screen" id="screen-home" class="screen">
+<div id="screen-home" class="screen">
   <!-- Dark editorial masthead -->
   <div class="hmast">
     <div class="hmast-top">
@@ -629,7 +629,7 @@ select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=
 </div>
 
 <!-- ═══ DETAIL ═══ -->
-<div class="screen" id="screen-detail" class="screen">
+<div id="screen-detail" class="screen">
   <div class="scroll" id="dscroll">
     <div class="di" id="dimg"></div>
     <div class="db">
@@ -658,7 +658,7 @@ select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=
 </div>
 
 <!-- ═══ CHAT LIST ═══ -->
-<div class="screen" id="screen-chat" class="screen">
+<div id="screen-chat" class="screen">
   <div class="topbar"><h1>Messages</h1>
     <div class="ib"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
   </div>
@@ -666,7 +666,7 @@ select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=
 </div>
 
 <!-- ═══ CHAT WINDOW ═══ -->
-<div class="screen" id="screen-chat-window" class="screen">
+<div id="screen-chat-window" class="screen">
   <div class="ch" id="cwh"></div>
   <div class="cpb" id="cwpb" style="display:none"></div>
   <div class="cmsg" id="cwm"></div>
@@ -677,7 +677,7 @@ select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=
 </div>
 
 <!-- ═══ SELL ═══ -->
-<div class="screen" id="screen-sell" class="screen">
+<div id="screen-sell" class="screen">
   <div class="topbar"><h1>List an Item</h1></div>
   <div class="scroll"><div class="sa2">
     <div class="iu" onclick="document.getElementById('imgfile').click()">
@@ -727,7 +727,7 @@ select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=
 </div>
 
 <!-- ═══ PAYMENT ═══ -->
-<div class="screen" id="screen-payment" class="screen">
+<div id="screen-payment" class="screen">
   <div class="topbar">
     <div class="bb" onclick="goBack()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div>
     <h1 style="font-size:19px">Checkout</h1>
@@ -746,7 +746,7 @@ select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=
 </div>
 
 <!-- ═══ ORDERS ═══ -->
-<div class="screen" id="screen-orders" class="screen">
+<div id="screen-orders" class="screen">
   <div class="topbar"><h1>My Orders</h1></div>
   <div class="scroll">
     <div style="display:flex;margin:14px 20px;border-radius:var(--rs);overflow:hidden;border:1px solid var(--b)">
@@ -758,7 +758,7 @@ select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=
 </div>
 
 <!-- ═══ NOTIFICATIONS ═══ -->
-<div class="screen" id="screen-notifications" class="screen">
+<div id="screen-notifications" class="screen">
   <div class="topbar">
     <div class="bb" onclick="goBack()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div>
     <h1>Notifications</h1>
@@ -767,7 +767,7 @@ select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=
 </div>
 
 <!-- ═══ PROFILE ═══ -->
-<div class="screen" id="screen-profile" class="screen">
+<div id="screen-profile" class="screen">
   <div class="scroll">
     <div class="pcover">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
@@ -874,7 +874,7 @@ select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=
 </div>
 
 <!-- ═══ ADMIN ═══ -->
-<div class="screen" id="screen-admin" class="screen">
+<div id="screen-admin" class="screen">
   <div class="acov">
     <div style="display:flex;align-items:center;gap:11px">
       <div class="bb" style="background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.14)" onclick="goBack()">
@@ -1148,69 +1148,7 @@ function openRateModal(orderId, otherName, otherRole) {
   openReviewModal();
 }
 
-async function submitReview() {
-  const body = document.getElementById('revbody').value.trim();
-  if (!curOid) { closeRevModal(); return; }
-
-  const order = DB.all('orders').find(o=>o.id===curOid);
-  if (!order) { showToast('Order not found','err'); closeRevModal(); return; }
-
-  const isBuyer  = order.buyerId  === CU.id;
-  const isSeller = order.sellerId === CU.id;
-  if (!isBuyer && !isSeller) { closeRevModal(); return; }
-
-  // Block double reviews
-  const already = DB.all('reviews').find(r=>r.orderId===curOid && r.reviewerId===CU.id);
-  if (already) { showToast('Already rated this trade','err'); closeRevModal(); return; }
-
-  const revieweeId = isBuyer ? order.sellerId : order.buyerId;
-  const ratingType = isBuyer ? 'buyer_to_seller' : 'seller_to_buyer';
-  const reviewee   = DB.all('users').find(u=>u.id===revieweeId);
-
-  const review = {
-    id:uid(), orderId:curOid, listingId:order.listingId,
-    reviewerId:CU.id, reviewerName:CU.name, reviewerAvatar:CU.avatar||CU.name[0],
-    revieweeId, rating:selStar, body, type:ratingType,
-    createdAt:new Date().toISOString()
-  };
-  DB.push('reviews', review);
-
-  // ── Recalculate reviewee's reputation ──
-  const allUsers   = DB.all('users');
-  const allReviews = DB.all('reviews');
-  const ridx = allUsers.findIndex(u=>u.id===revieweeId);
-  if (ridx>-1) {
-    const u = allUsers[ridx];
-    const theirRevs = allReviews.filter(r=>r.revieweeId===revieweeId);
-    u.ratingAvg   = Math.round(theirRevs.reduce((s,r)=>s+r.rating,0)/theirRevs.length*10)/10;
-    u.ratingCount = theirRevs.length;
-    // Separate buyer / seller scores
-    const asSellerRevs = theirRevs.filter(r=>r.type==='buyer_to_seller');
-    const asBuyerRevs  = theirRevs.filter(r=>r.type==='seller_to_buyer');
-    u.ratingAsSeller  = asSellerRevs.length ? Math.round(asSellerRevs.reduce((s,r)=>s+r.rating,0)/asSellerRevs.length*10)/10 : 0;
-    u.countAsSeller   = asSellerRevs.length;
-    u.ratingAsBuyer   = asBuyerRevs.length  ? Math.round(asBuyerRevs.reduce((s,r)=>s+r.rating,0)/asBuyerRevs.length*10)/10   : 0;
-    u.countAsBuyer    = asBuyerRevs.length;
-    u.totalTrades     = (u.totalTrades||0);
-    DB.set('users', allUsers);
-    if (CU.id===revieweeId) CU = allUsers[ridx];
-  }
-
-  // Mark who reviewed on the order
-  const orders = DB.all('orders');
-  const oidx = orders.findIndex(o=>o.id===curOid);
-  if(oidx>-1){
-    if(isBuyer)  orders[oidx].buyerReviewed=true;
-    if(isSeller) orders[oidx].sellerReviewed=true;
-    DB.set('orders',orders);
-  }
-
-  closeRevModal();
-  document.getElementById('revbody').value='';
-  selStar=5;
-  showToast('⭐ Rating saved — thank you!','ok');
-  if(CS==='orders') loadOrders(document.getElementById('otb-buy').style.background.includes('0A')?'buying':'selling');
-}
+async // submitReview defined below
 
 // ══════════════════════════════════════════════════════════════
 //  HOME & LISTINGS
@@ -1851,7 +1789,6 @@ function renderProfile() {
 
   // Ratings bars
   const avg = CU.ratingAvg||0;
-  const avg = CU.ratingAvg||0;
   document.getElementById('prbig').textContent = avg?avg.toFixed(1):'—';
   document.getElementById('prcount').textContent = (CU.ratingCount||0)+' trades';
   // Dual scores
@@ -2299,7 +2236,7 @@ window.addEventListener('appinstalled', () => {
 </script>
 
 <!-- ═══ EDIT PROFILE ═══ -->
-<div class="screen" id="screen-edit-profile" class="screen">
+<div id="screen-edit-profile" class="screen">
   <div class="topbar">
     <div class="bb" onclick="goBack()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></div>
     <h1>Edit Profile</h1>
