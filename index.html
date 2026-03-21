@@ -2418,31 +2418,11 @@ window.addEventListener('appinstalled', () => {
     localStorage.setItem('sk_session', JSON.stringify(uid));
     window.CU = user;
 
-    // Enter app
+    // Save done — reload so DOMContentLoaded auto-login kicks in
     var btn = document.getElementById('btn-finish');
-    btn.textContent = 'Entering...';
-
-    function tryEnter(tries) {
-      if (typeof nav === 'function') {
-        CU = user;
-        document.getElementById('screen-auth').style.display = 'none';
-        document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
-        var home = document.getElementById('screen-home');
-        if (home) { home.style.display='flex'; home.classList.add('active'); }
-        var bnav = document.getElementById('bnav');
-        if (bnav) bnav.style.display = 'block';
-        if (user.role==='admin') {
-          var am=document.getElementById('admmi'); if(am) am.style.display='flex';
-          var al=document.getElementById('admlnk'); if(al) al.style.display='flex';
-        }
-        nav('home');
-      } else if (tries < 50) {
-        setTimeout(function(){ tryEnter(tries+1); }, 100);
-      } else {
-        location.reload();
-      }
-    }
-    tryEnter(0);
+    btn.textContent = 'Entering Skilyx...';
+    btn.style.background = '#27AE60';
+    setTimeout(function(){ location.reload(); }, 300);
   });
 
   // Name input hint
