@@ -2466,60 +2466,95 @@ window.addEventListener('hashchange',handleDeepLink);
 
 
 window.addEventListener('DOMContentLoaded', ()=>{
-  // ── Bind onboarding buttons with both click and touchend ──
-  function bindBtn(id, fn) {
-    const el = document.getElementById(id);
-    if (!el) return;
-    let tapped = false;
-    el.addEventListener('touchend', function(e) {
-      e.preventDefault();
-      if (tapped) return;
-      tapped = true;
-      setTimeout(() => tapped = false, 500);
-      fn();
-    }, {passive: false});
-    el.addEventListener('click', function(e) {
-      if (tapped) return;
-      fn();
+
+  // ── ONBOARDING WIRING — runs after DOM is ready ──
+  function wire() {
+    // Helper: bind both click and touchend, debounced
+    function b(id, fn) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      let busy = false;
+      function go(e) {
+        if (e.cancelable) e.preventDefault();
+        if (busy) return; busy = true;
+        setTimeout(()=>busy=false, 400);
+        fn();
+      }
+      el.addEventListener('touchend', go, {passive:false});
+      el.addEventListener('click', go);
+    }
+
+    // Buttons
+    b('next1-btn',  ()=>goStep(2));
+    b('next2-btn',  ()=>goStep(3));
+    b('back1-btn',  ()=>goStep(1));
+    b('back2-btn',  ()=>goStep(2));
+    b('finish-btn', ()=>finishOnboarding());
+
+    // Avatar tiles
+    const AV = {
+      'av-lion':'🦁','av-tiger':'🐯','av-fox':'🦊','av-butterfly':'🦋',
+      'av-moon':'🌙','av-bolt':'⚡','av-wave':'🌊','av-fire':'🔥',
+      'av-diamond':'💎','av-leaf':'🌿','av-target':'🎯','av-rocket':'🚀',
+      'av-masks':'🎭','av-flower':'🌸','av-crown':'👑'
+    };
+    Object.entries(AV).forEach(([id, emoji]) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      let busy = false;
+      function go(e) {
+        if (e.cancelable) e.preventDefault();
+        if (busy) return; busy = true;
+        setTimeout(()=>busy=false,300);
+        // Deselect all, select this one
+        Object.keys(AV).forEach(aid=>{
+          const a=document.getElementById(aid);
+          if(a) a.style.border='2px solid #2E2E2C';
+        });
+        el.style.border='2px solid #C9922A';
+        _onbAv = emoji;
+      }
+      el.addEventListener('touchend', go, {passive:false});
+      el.addEventListener('click', go);
     });
+
+    // City tiles
+    document.querySelectorAll('.city-opt').forEach(el => {
+      const city = el.getAttribute('data-city') || el.textContent.trim();
+      let busy = false;
+      function go(e) {
+        if (e.cancelable) e.preventDefault();
+        if (busy) return; busy = true;
+        setTimeout(()=>busy=false,300);
+        document.querySelectorAll('.city-opt').forEach(c=>{
+          c.style.border='1.5px solid #2E2E2C';
+          c.style.color='#A09C94';
+          c.style.background='#1C1C1A';
+        });
+        el.style.border='1.5px solid #C9922A';
+        el.style.color='#C9922A';
+        el.style.background='rgba(201,146,42,.1)';
+        _onbCity = city;
+        const ow=document.getElementById('city-other-wrap');
+        if(ow) ow.style.display = city==='Other'?'block':'none';
+      }
+      el.addEventListener('touchend', go, {passive:false});
+      el.addEventListener('click', go);
+    });
+
+    // Name input live check
+    const ni = document.getElementById('onb-name');
+    if (ni) ni.addEventListener('input', ()=>checkOnbName(ni));
   }
-  bindBtn('onb-btn-1', () => onbStep(2));
-  bindBtn('onb-btn-2', () => onbStep(3));
-  bindBtn('onb-btn-3', () => finishOnboarding());
 
-  // ── Bind avatar picks ──
-  document.querySelectorAll('.av-opt').forEach(el => {
-    const emoji = el.textContent.trim();
-    let tapped = false;
-    el.addEventListener('touchend', function(e) {
-      e.preventDefault();
-      if (tapped) return;
-      tapped = true;
-      setTimeout(() => tapped = false, 300);
-      pickAv(el, emoji);
-    }, {passive: false});
-    el.addEventListener('click', () => pickAv(el, emoji));
-  });
+  // Wire immediately and again after short delay (catches slow renders)
+  wire();
+  setTimeout(wire, 500);
 
-  // ── Bind city picks ──
-  document.querySelectorAll('.city-opt').forEach(el => {
-    const city = el.textContent.trim();
-    let tapped = false;
-    el.addEventListener('touchend', function(e) {
-      e.preventDefault();
-      if (tapped) return;
-      tapped = true;
-      setTimeout(() => tapped = false, 300);
-      pickCity(el, city);
-    }, {passive: false});
-    el.addEventListener('click', () => pickCity(el, city));
-  });
-
-  // ── Wipe all demo data on first launch of this version ──
+  // ── Demo data wipe ──
   clearDemoData();
-  setTimeout(initOnboarding, 100);
-  
-  // ── Handle incoming deep links (shared listing links) ──
+
+  // ── Deep links ──
   setTimeout(handleDeepLink, 800);
 
 
