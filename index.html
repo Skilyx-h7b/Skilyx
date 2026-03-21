@@ -495,7 +495,7 @@ select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=
       <div class="av-opt" onclick="pickAv(this,'🌸')">🌸</div>
       <div class="av-opt" onclick="pickAv(this,'👑')">👑</div>
     </div>
-    <button onclick="onbStep(2)" style="width:100%;padding:16px;background:#C9922A;color:#fff;border:none;border-radius:12px;font-family:var(--fb);font-size:15px;font-weight:800;cursor:pointer;letter-spacing:.05em;text-transform:uppercase;position:relative;z-index:2;touch-action:manipulation">Next →</button>
+    <button onclick="onbStep(2)" ontouchend="event.preventDefault();onbStep(2)" style="width:100%;padding:16px;background:#C9922A;color:#fff;border:none;border-radius:12px;font-family:var(--fb);font-size:15px;font-weight:800;cursor:pointer;letter-spacing:.05em;text-transform:uppercase;position:relative;z-index:2;touch-action:manipulation">NEXT →</button>
   </div>
 
   <!-- STEP 2 — Name -->
@@ -516,7 +516,7 @@ select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=
         <span style="font-size:11px;color:var(--txt3)" id="onb-name-count">0/30</span>
       </div>
     </div>
-    <button onclick="onbStep(3)" style="width:100%;padding:16px;background:#C9922A;color:#fff;border:none;border-radius:12px;font-family:var(--fb);font-size:15px;font-weight:800;cursor:pointer;letter-spacing:.05em;text-transform:uppercase;margin-bottom:10px;touch-action:manipulation">Next →</button>
+    <button onclick="onbStep(3)" ontouchend="event.preventDefault();onbStep(3)" style="width:100%;padding:16px;background:#C9922A;color:#fff;border:none;border-radius:12px;font-family:var(--fb);font-size:15px;font-weight:800;cursor:pointer;letter-spacing:.05em;text-transform:uppercase;margin-bottom:10px;touch-action:manipulation">NEXT →</button>
     <button onclick="onbStep(1)" style="width:100%;padding:12px;background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;font-size:13px;font-family:var(--fb);touch-action:manipulation">← Back</button>
   </div>
 
@@ -542,7 +542,7 @@ select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=
     <div id="city-other-wrap" style="display:none;margin-bottom:16px">
       <input class="fi" id="city-other" placeholder="Type your city…" style="width:100%">
     </div>
-    <button onclick="finishOnboarding()" style="width:100%;padding:16px;background:#0A0A0A;color:#fff;border:none;border-radius:12px;font-family:var(--fb);font-size:15px;font-weight:800;cursor:pointer;letter-spacing:.05em;text-transform:uppercase;margin-bottom:10px;touch-action:manipulation">Enter Skilyx →</button>
+    <button onclick="finishOnboarding()" ontouchend="event.preventDefault();finishOnboarding()" style="width:100%;padding:16px;background:#0A0A0A;color:#fff;border:none;border-radius:12px;font-family:var(--fb);font-size:15px;font-weight:800;cursor:pointer;letter-spacing:.05em;text-transform:uppercase;margin-bottom:10px;touch-action:manipulation">ENTER SKILYX →</button>
     <button onclick="onbStep(2)" style="width:100%;padding:12px;background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;font-size:13px;font-family:var(--fb);touch-action:manipulation">← Back</button>
   </div>
 </div>
@@ -937,6 +937,7 @@ select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=
 <div class="toast" id="toast"></div>
 
 <script>
+// VERSION: 5.0 - TOUCH FIX
 // ══════════════════════════════════════════════════════════════════
 //  SKILYX STANDALONE — Complete App with localStorage
 //  Works 100% offline on Android — no server needed
@@ -1053,6 +1054,14 @@ let _onbAv   = '🦁';
 let _onbCity = '';
 const BLOCKED_NAMES = ['admin','skilyx','test','fake','asdf','null','undefined'];
 
+// ── TOUCH FIX: bypass Android 300ms tap delay ──────────────────
+// Use a single passive touchstart to unlock fast taps globally
+document.addEventListener('touchstart', function(){}, {passive:true});
+
+// Dummy functions - touch handlers removed, onclick handles everything
+function addTouchHandler(selector, handler) {}
+function initOnbTouchHandlers() {}
+
 function onbStep(n) {
   // Validate name only when moving FROM step 2 TO step 3
   if (n === 3) {
@@ -1082,11 +1091,18 @@ function onbStep(n) {
   // Scroll sheet to top
   const sheet = document.getElementById('onb-'+n);
   if (sheet) sheet.scrollTop = 0;
+
 }
 
 function pickAv(el, emoji) {
-  document.querySelectorAll('.av-opt').forEach(e=>e.classList.remove('sel'));
-  el.classList.add('sel'); _onbAv = emoji;
+  try {
+    document.querySelectorAll('.av-opt').forEach(e=>e.classList.remove('sel'));
+    el.classList.add('sel');
+    _onbAv = emoji;
+    // Visual feedback
+    el.style.transform = 'scale(1.1)';
+    setTimeout(()=>{ el.style.transform = ''; }, 200);
+  } catch(err) { console.error('pickAv error:', err); }
 }
 
 function pickCity(el, city) {
@@ -2269,10 +2285,60 @@ window.addEventListener('hashchange',handleDeepLink);
 
 
 window.addEventListener('DOMContentLoaded', ()=>{
+  // ── Bind onboarding buttons with both click and touchend ──
+  function bindBtn(id, fn) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    let tapped = false;
+    el.addEventListener('touchend', function(e) {
+      e.preventDefault();
+      if (tapped) return;
+      tapped = true;
+      setTimeout(() => tapped = false, 500);
+      fn();
+    }, {passive: false});
+    el.addEventListener('click', function(e) {
+      if (tapped) return;
+      fn();
+    });
+  }
+  bindBtn('onb-btn-1', () => onbStep(2));
+  bindBtn('onb-btn-2', () => onbStep(3));
+  bindBtn('onb-btn-3', () => finishOnboarding());
+
+  // ── Bind avatar picks ──
+  document.querySelectorAll('.av-opt').forEach(el => {
+    const emoji = el.textContent.trim();
+    let tapped = false;
+    el.addEventListener('touchend', function(e) {
+      e.preventDefault();
+      if (tapped) return;
+      tapped = true;
+      setTimeout(() => tapped = false, 300);
+      pickAv(el, emoji);
+    }, {passive: false});
+    el.addEventListener('click', () => pickAv(el, emoji));
+  });
+
+  // ── Bind city picks ──
+  document.querySelectorAll('.city-opt').forEach(el => {
+    const city = el.textContent.trim();
+    let tapped = false;
+    el.addEventListener('touchend', function(e) {
+      e.preventDefault();
+      if (tapped) return;
+      tapped = true;
+      setTimeout(() => tapped = false, 300);
+      pickCity(el, city);
+    }, {passive: false});
+    el.addEventListener('click', () => pickCity(el, city));
+  });
+
   // ── Wipe all demo data on first launch of this version ──
   clearDemoData();
   // ── Handle incoming deep links (shared listing links) ──
   setTimeout(handleDeepLink, 800);
+
 
   // Auto-login if session exists
   const sessId = DB.get('session');
