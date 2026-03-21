@@ -511,26 +511,84 @@ function finishOnboarding() {
   var name = nameEl ? nameEl.value.trim() : '';
   if (name.length < 2) { goStep(2); return; }
 
-  // Read city from any scope it was set in
   var city = window._onbCity || _onbCity || 'Johannesburg';
   if (city === 'Other') {
     var oc = document.getElementById('city-other');
     city = oc && oc.value.trim() ? oc.value.trim() : 'South Africa';
   }
 
-  // Show loading state on button
   var btn = document.getElementById('finish-btn');
   if (btn) { btn.textContent = 'Entering...'; btn.style.opacity = '0.7'; }
 
-  // Try createProfile — wait for main JS if needed
-  function tryCreate() {
-    if (typeof createProfile === 'function') {
-      createProfile(name, city);
+  // Build user directly — no dependency on main JS scope
+  var uid_val = Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+  var existing = [];
+  try { existing = JSON.parse(localStorage.getItem('sk_users')) || []; } catch(e){}
+  
+  // Check name taken
+  var finalName = name;
+  if (existing.find(function(u){ return u.name.toLowerCase()===name.toLowerCase(); })) {
+    finalName = name + (Math.floor(Math.random()*900)+100);
+  }
+
+  var user = {
+    id: uid_val,
+    name: finalName,
+    avatar: window._onbAv || _onbAv || '🦁',
+    city: city,
+    role: existing.length === 0 ? 'admin' : 'user',
+    ratingAvg:0, ratingCount:0,
+    ratingAsSeller:0, countAsSeller:0,
+    ratingAsBuyer:0, countAsBuyer:0,
+    totalTrades:0, wallet:0, listings:0, sales:0,
+    is_suspended:false,
+    joinedAt: new Date().toISOString()
+  };
+
+  // Save to localStorage
+  existing.unshift(user);
+  localStorage.setItem('sk_users', JSON.stringify(existing));
+  localStorage.setItem('sk_session', JSON.stringify(user.id));
+
+  // Save to window so main JS can pick it up
+  window.CU = user;
+  window._pendingUser = user;
+
+  // Try to navigate — retry until main JS is ready
+  var _tries = 0;
+  function tryNav() {
+    _tries++;
+    if (typeof nav === 'function' && typeof showS === 'function') {
+      CU = user;
+      window.CU = user;
+      if (user.role === 'admin') {
+        var am = document.getElementById('admmi');
+        var al = document.getElementById('admlnk');
+        if (am) am.style.display = 'flex';
+        if (al) al.style.display = 'flex';
+      }
+      // Hide auth screen directly
+      var authEl = document.getElementById('screen-auth');
+      if (authEl) authEl.style.display = 'none';
+      // Show home screen directly
+      var homeEl = document.getElementById('screen-home');
+      if (homeEl) {
+        homeEl.classList.add('active');
+        homeEl.style.display = 'flex';
+      }
+      // Show bottom nav
+      var bnav = document.getElementById('bnav');
+      if (bnav) bnav.style.display = 'block';
+      // Use nav() to set up properly
+      nav('home');
+    } else if (_tries < 40) {
+      setTimeout(tryNav, 100);
     } else {
-      setTimeout(tryCreate, 100);
+      // Session saved — reload will auto-login
+      window.location.reload();
     }
   }
-  tryCreate();
+  tryNav();
 }
 </script>
 </head>
@@ -2416,15 +2474,21 @@ window.addEventListener('DOMContentLoaded', ()=>{
   setTimeout(handleDeepLink, 800);
 
 
+  // Check if user just completed onboarding (finishOnboarding ran before main JS)
+  if (window._pendingUser) {
+    CU = window._pendingUser;
+    window._pendingUser = null;
+    afterLogin();
+    return;
+  }
+
   // Auto-login if session exists
   const sessId = DB.get('session');
   if (sessId) {
     const user = DB.all('users').find(u=>u.id===sessId);
     if (user) {
       CU = user;
-      // Check for PIN before entering app
       if (hasPin()) {
-        // Show home first, then lock it
         afterLogin();
         setTimeout(()=>showPinScreen(), 200);
       } else {
@@ -3187,26 +3251,84 @@ function finishOnboarding() {
   var name = nameEl ? nameEl.value.trim() : '';
   if (name.length < 2) { goStep(2); return; }
 
-  // Read city from any scope it was set in
   var city = window._onbCity || _onbCity || 'Johannesburg';
   if (city === 'Other') {
     var oc = document.getElementById('city-other');
     city = oc && oc.value.trim() ? oc.value.trim() : 'South Africa';
   }
 
-  // Show loading state on button
   var btn = document.getElementById('finish-btn');
   if (btn) { btn.textContent = 'Entering...'; btn.style.opacity = '0.7'; }
 
-  // Try createProfile — wait for main JS if needed
-  function tryCreate() {
-    if (typeof createProfile === 'function') {
-      createProfile(name, city);
+  // Build user directly — no dependency on main JS scope
+  var uid_val = Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+  var existing = [];
+  try { existing = JSON.parse(localStorage.getItem('sk_users')) || []; } catch(e){}
+  
+  // Check name taken
+  var finalName = name;
+  if (existing.find(function(u){ return u.name.toLowerCase()===name.toLowerCase(); })) {
+    finalName = name + (Math.floor(Math.random()*900)+100);
+  }
+
+  var user = {
+    id: uid_val,
+    name: finalName,
+    avatar: window._onbAv || _onbAv || '🦁',
+    city: city,
+    role: existing.length === 0 ? 'admin' : 'user',
+    ratingAvg:0, ratingCount:0,
+    ratingAsSeller:0, countAsSeller:0,
+    ratingAsBuyer:0, countAsBuyer:0,
+    totalTrades:0, wallet:0, listings:0, sales:0,
+    is_suspended:false,
+    joinedAt: new Date().toISOString()
+  };
+
+  // Save to localStorage
+  existing.unshift(user);
+  localStorage.setItem('sk_users', JSON.stringify(existing));
+  localStorage.setItem('sk_session', JSON.stringify(user.id));
+
+  // Save to window so main JS can pick it up
+  window.CU = user;
+  window._pendingUser = user;
+
+  // Try to navigate — retry until main JS is ready
+  var _tries = 0;
+  function tryNav() {
+    _tries++;
+    if (typeof nav === 'function' && typeof showS === 'function') {
+      CU = user;
+      window.CU = user;
+      if (user.role === 'admin') {
+        var am = document.getElementById('admmi');
+        var al = document.getElementById('admlnk');
+        if (am) am.style.display = 'flex';
+        if (al) al.style.display = 'flex';
+      }
+      // Hide auth screen directly
+      var authEl = document.getElementById('screen-auth');
+      if (authEl) authEl.style.display = 'none';
+      // Show home screen directly
+      var homeEl = document.getElementById('screen-home');
+      if (homeEl) {
+        homeEl.classList.add('active');
+        homeEl.style.display = 'flex';
+      }
+      // Show bottom nav
+      var bnav = document.getElementById('bnav');
+      if (bnav) bnav.style.display = 'block';
+      // Use nav() to set up properly
+      nav('home');
+    } else if (_tries < 40) {
+      setTimeout(tryNav, 100);
     } else {
-      setTimeout(tryCreate, 100);
+      // Session saved — reload will auto-login
+      window.location.reload();
     }
   }
-  tryCreate();
+  tryNav();
 }
 </script>
 </head>
@@ -5092,15 +5214,21 @@ window.addEventListener('DOMContentLoaded', ()=>{
   setTimeout(handleDeepLink, 800);
 
 
+  // Check if user just completed onboarding (finishOnboarding ran before main JS)
+  if (window._pendingUser) {
+    CU = window._pendingUser;
+    window._pendingUser = null;
+    afterLogin();
+    return;
+  }
+
   // Auto-login if session exists
   const sessId = DB.get('session');
   if (sessId) {
     const user = DB.all('users').find(u=>u.id===sessId);
     if (user) {
       CU = user;
-      // Check for PIN before entering app
       if (hasPin()) {
-        // Show home first, then lock it
         afterLogin();
         setTimeout(()=>showPinScreen(), 200);
       } else {
