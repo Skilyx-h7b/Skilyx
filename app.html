@@ -461,36 +461,24 @@ select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=
 <script>
 var _onbAv = '🦁';
 var _onbCity = '';
-var _busy = false;
-
-function _go(fn) {
-  if (_busy) return;
-  _busy = true;
-  fn();
-  setTimeout(function(){ _busy = false; }, 200);
-}
 
 function goStep(n) {
-  _go(function(){
-    if (n === 3) {
-      var nm = (document.getElementById('onb-name')||{}).value||'';
-      if (nm.trim().length < 2) {
-        var h = document.getElementById('hint-onb-name');
-        if (h) { h.textContent='Enter at least 2 characters'; h.style.color='#E74C3C'; }
-        var inp = document.getElementById('onb-name');
-        if (inp) inp.focus();
-        _busy = false; return;
-      }
+  if (n === 3) {
+    var nm = ((document.getElementById('onb-name')||{}).value||'').trim();
+    if (nm.length < 2) {
+      var inp = document.getElementById('onb-name');
+      if (inp) { inp.style.borderColor='#C9922A'; inp.focus(); }
+      return;
     }
-    for (var i=1; i<=3; i++) {
-      var el = document.getElementById('onb-'+i);
-      if (el) el.style.display = i===n ? 'block' : 'none';
-    }
-    if (n===2) {
-      var prev = document.getElementById('onb-av-preview');
-      if (prev) prev.textContent = _onbAv;
-    }
-  });
+  }
+  for (var i=1; i<=3; i++) {
+    var el = document.getElementById('onb-'+i);
+    if (el) el.style.display = (i===n) ? 'block' : 'none';
+  }
+  if (n===2) {
+    var prev = document.getElementById('onb-av-preview');
+    if (prev) prev.textContent = _onbAv;
+  }
 }
 
 function selectAvatar(id, emoji) {
