@@ -28,7 +28,6 @@
 html,body{height:100%;font-family:var(--fb);color:var(--ink);background:#0A0A0A;-webkit-font-smoothing:antialiased;overscroll-behavior:none}
 #app{max-width:430px;margin:0 auto;height:100dvh;background:var(--bg);display:flex;flex-direction:column;overflow:hidden;position:relative}
 .screen{display:none;flex-direction:column;flex:1;overflow:hidden}
-#app{visibility:hidden}
 .screen.active{display:flex;animation:fu .2s ease}
 @keyframes fu{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 @keyframes su{from{transform:translateY(100%)}to{transform:translateY(0)}}
@@ -2208,9 +2207,7 @@ window.addEventListener('hashchange',handleDeepLink);
 
 
 window.addEventListener('DOMContentLoaded', function() {
-  // ── Show app ──
-  var appEl = document.getElementById('app');
-  if (appEl) appEl.style.visibility = 'visible';
+  // ── App is always visible (splash covers it during load) ──
   var splash = document.getElementById('splash');
   if (splash) splash.style.display = 'none';
 
