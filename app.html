@@ -2207,87 +2207,41 @@ window.addEventListener('hashchange',handleDeepLink);
 
 
 window.addEventListener('DOMContentLoaded', function() {
-  // ── App is always visible (splash covers it during load) ──
-  var splash = document.getElementById('splash');
-  if (splash) splash.style.display = 'none';
-
-  // ── DEBUG: show what's in localStorage ──
-  var sk_session = localStorage.getItem('sk_session');
-  var sk_users   = localStorage.getItem('sk_users');
-  var debug = document.getElementById('debug-panel');
-  if (debug) {
-    debug.innerHTML = 
-      '<b>sk_session:</b> ' + (sk_session||'NULL') + '<br>' +
-      '<b>sk_users:</b> ' + (sk_users ? sk_users.slice(0,80)+'...' : 'NULL');
-    debug.style.display = 'block';
-    setTimeout(function(){ debug.style.display='none'; }, 8000);
-  }
-
-  // ── Demo data wipe ──
   clearDemoData();
-  // ── Deep links ──
-  setTimeout(handleDeepLink, 800);
-  // ── Auto-login if session exists ──
-  // Try DB helper first
-  var sessId = DB.get('session');
-  // Also try direct localStorage in case of key format difference
-  if (!sessId) {
-    try {
-      var raw = localStorage.getItem('sk_session');
-      if (raw) sessId = JSON.parse(raw);
-    } catch(e) {}
-  }
 
-  if (sessId) {
-    // Try DB helper first
-    var users = DB.all('users');
-    // Also try direct localStorage
-    if (!users || users.length === 0) {
-      try {
-        var rawUsers = localStorage.getItem('sk_users');
-        if (rawUsers) users = JSON.parse(rawUsers);
-      } catch(e) {}
+  // Show splash for 2 seconds then navigate
+  setTimeout(function() {
+    // Hide splash
+    var splash = document.getElementById('splash');
+    if (splash) { splash.style.animation='none'; splash.style.display='none'; }
+
+    // Check session
+    var sessId = DB.get('session');
+    if (!sessId) {
+      try { var r = localStorage.getItem('sk_session'); if(r) sessId = JSON.parse(r); } catch(e){}
     }
-    var user = null;
-    if (users) {
-      for (var i=0; i<users.length; i++) {
-        if (users[i] && users[i].id === sessId) { user = users[i]; break; }
+
+    if (sessId) {
+      var users = DB.all('users');
+      if (!users || !users.length) {
+        try { var ru = localStorage.getItem('sk_users'); if(ru) users = JSON.parse(ru); } catch(e){}
+      }
+      var user = null;
+      if (users) {
+        for (var i=0; i<users.length; i++) {
+          if (users[i] && users[i].id === sessId) { user = users[i]; break; }
+        }
+      }
+      if (user) {
+        CU = user; window.CU = user;
+        afterLogin();
+        return;
       }
     }
-    if (user) {
-      CU = user;
-      window.CU = user;
-      if (typeof hasPin === 'function' && hasPin()) {
-        afterLogin();
-        setTimeout(function(){ showPinScreen(); }, 200);
-      } else {
-        afterLogin();
-      }
-      return;
-    }
-  }
-  showS('auth');
-});
-</script>
+    showS('auth');
+  }, 2000);
 
-<script>
-// Service worker disabled for reliability
-// if ('serviceWorker' in navigator) { ... }
-// Handle PWA install prompt
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  // Show install banner after 3 seconds if not installed
-  setTimeout(() => {
-    if (deferredPrompt) {
-      const banner = document.createElement('div');
-      banner.id = 'install-banner';
-      banner.style.cssText = 'position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#0A0A0A;color:#fff;padding:12px 20px;border-radius:12px;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;z-index:9998;display:flex;align-items:center;gap:12px;box-shadow:0 8px 32px rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.12);white-space:nowrap';
-      banner.innerHTML = '<img src="icons/icon-96.png" style="width:28px;height:28px;border-radius:7px"><span>Install Skilyx as an app</span><button onclick="installApp()" style="background:#B8962E;color:#fff;border:none;border-radius:7px;padding:7px 14px;font-family:Outfit,sans-serif;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.04em;text-transform:uppercase">Install</button><span onclick="this.parentElement.remove()" style="color:rgba(255,255,255,.4);cursor:pointer;padding:0 4px">✕</span>';
-      document.getElementById('app').appendChild(banner);
-    }
-  }, 3000);
+  setTimeout(handleDeepLink, 2800);
 });
 
 window.installApp = async () => {
