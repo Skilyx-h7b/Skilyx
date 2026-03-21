@@ -789,7 +789,7 @@ select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=
         <div class="psi"><div class="psv" id="ps-r">—</div><div class="psl">Rating</div></div>
         <div class="psi"><div class="psv" id="ps-w">R0</div><div class="psl">Wallet</div></div>
       </div>
-      <button class="edb" onclick="showToast('Edit profile — coming soon when connected to server')">Edit Profile</button>
+      <button class="edb" id="edit-profile-btn" ontouchstart="event.preventDefault();openEditProfile()" onclick="openEditProfile()">Edit Profile</button>
     </div>
     <div class="rc">
         <div class="rbig" id="prbig">—</div>
@@ -2195,13 +2195,8 @@ window.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
-      .then(r => console.log('Skilyx SW registered'))
-      .catch(e => console.log('SW registration failed:', e));
-  });
-}
+// Service worker disabled for reliability
+// if ('serviceWorker' in navigator) { ... }
 // Handle PWA install prompt
 let deferredPrompt;
 window.addEventListener('beforeinstallprompt', (e) => {
@@ -2656,6 +2651,207 @@ document.addEventListener('DOMContentLoaded', function() {
     setTimeout(tick, 800);
   });
 })();
+</script>
+
+<!-- EDIT PROFILE MODAL -->
+<div id="edit-profile-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);z-index:300;align-items:flex-end">
+  <div style="background:#141412;border-radius:24px 24px 0 0;padding:24px 22px max(32px,env(safe-area-inset-bottom));width:100%;border-top:1px solid #2E2E2C;max-height:85vh;overflow-y:auto">
+    <div style="width:34px;height:3px;background:#333;border-radius:2px;margin:0 auto 20px"></div>
+    <div style="font-family:'Playfair Display',serif;font-size:19px;font-weight:700;color:#E8E4DC;margin-bottom:4px">Edit Profile</div>
+    <div style="font-size:12px;color:#606060;margin-bottom:20px">Changes save instantly to your device</div>
+
+    <!-- Avatar picker -->
+    <div style="font-size:11px;font-weight:700;color:#A09C94;text-transform:uppercase;letter-spacing:.09em;margin-bottom:10px">Your Avatar</div>
+    <div id="edit-av-grid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:20px">
+      <div data-emoji="🦁" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer">🦁</div>
+      <div data-emoji="🐯" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer">🐯</div>
+      <div data-emoji="🦊" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer">🦊</div>
+      <div data-emoji="🦋" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer">🦋</div>
+      <div data-emoji="🌙" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer">🌙</div>
+      <div data-emoji="⚡" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer">⚡</div>
+      <div data-emoji="🌊" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer">🌊</div>
+      <div data-emoji="🔥" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer">🔥</div>
+      <div data-emoji="💎" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer">💎</div>
+      <div data-emoji="🌿" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer">🌿</div>
+      <div data-emoji="🎯" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer">🎯</div>
+      <div data-emoji="🚀" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer">🚀</div>
+      <div data-emoji="🎭" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer">🎭</div>
+      <div data-emoji="🌸" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer">🌸</div>
+      <div data-emoji="👑" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer">👑</div>
+    </div>
+
+    <!-- Name -->
+    <div style="font-size:11px;font-weight:700;color:#A09C94;text-transform:uppercase;letter-spacing:.09em;margin-bottom:7px">Display Name</div>
+    <input id="edit-name" type="text" maxlength="30" style="width:100%;background:#202020;border:1.5px solid #303030;border-radius:11px;padding:13px 16px;color:#E8E4DC;font-size:15px;outline:none;box-sizing:border-box;font-family:Outfit,sans-serif;margin-bottom:16px">
+
+    <!-- City -->
+    <div style="font-size:11px;font-weight:700;color:#A09C94;text-transform:uppercase;letter-spacing:.09em;margin-bottom:10px">City</div>
+    <div id="edit-city-grid" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px">
+      <div data-city="Johannesburg" style="padding:8px 14px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">Johannesburg</div>
+      <div data-city="Cape Town" style="padding:8px 14px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">Cape Town</div>
+      <div data-city="Durban" style="padding:8px 14px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">Durban</div>
+      <div data-city="Pretoria" style="padding:8px 14px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">Pretoria</div>
+      <div data-city="Port Elizabeth" style="padding:8px 14px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">Port Elizabeth</div>
+      <div data-city="Bloemfontein" style="padding:8px 14px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">Bloemfontein</div>
+      <div data-city="Soweto" style="padding:8px 14px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">Soweto</div>
+      <div data-city="Sandton" style="padding:8px 14px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">Sandton</div>
+      <div data-city="Midrand" style="padding:8px 14px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">Midrand</div>
+      <div data-city="East London" style="padding:8px 14px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">East London</div>
+      <div data-city="Centurion" style="padding:8px 14px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">Centurion</div>
+    </div>
+
+    <button id="save-profile-btn" style="width:100%;padding:16px;background:#C9922A;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;cursor:pointer;font-family:Outfit,sans-serif">Save Changes</button>
+    <button id="cancel-profile-btn" style="width:100%;padding:13px;background:none;border:none;color:#606060;font-size:13px;cursor:pointer;font-family:Outfit,sans-serif">Cancel</button>
+  </div>
+</div>
+
+<script>
+// ═══ EDIT PROFILE ═══
+var _editAv = '';
+var _editCity = '';
+
+function openEditProfile() {
+  if (!CU && window.CU) CU = window.CU;
+  if (!CU) return;
+  
+  _editAv = CU.avatar || '🦁';
+  _editCity = CU.city || '';
+  
+  // Pre-fill name
+  var ni = document.getElementById('edit-name');
+  if (ni) ni.value = CU.name || '';
+  
+  // Highlight current avatar
+  var grid = document.getElementById('edit-av-grid');
+  if (grid) {
+    grid.querySelectorAll('[data-emoji]').forEach(function(el) {
+      el.style.border = el.getAttribute('data-emoji') === _editAv 
+        ? '2px solid #C9922A' : '2px solid #2E2E2C';
+    });
+  }
+  
+  // Highlight current city
+  var cgrid = document.getElementById('edit-city-grid');
+  if (cgrid) {
+    cgrid.querySelectorAll('[data-city]').forEach(function(el) {
+      var isActive = el.getAttribute('data-city') === _editCity;
+      el.style.border = isActive ? '1.5px solid #C9922A' : '1.5px solid #2E2E2C';
+      el.style.color = isActive ? '#C9922A' : '#A09C94';
+      el.style.background = isActive ? 'rgba(201,146,42,.1)' : '#1C1C1A';
+    });
+  }
+  
+  var modal = document.getElementById('edit-profile-modal');
+  if (modal) modal.style.display = 'flex';
+}
+
+function closeEditProfile() {
+  var modal = document.getElementById('edit-profile-modal');
+  if (modal) modal.style.display = 'none';
+}
+
+function saveProfile() {
+  if (!CU && window.CU) CU = window.CU;
+  if (!CU) return;
+  
+  var name = (document.getElementById('edit-name').value || '').trim();
+  if (name.length < 2) {
+    showToast('Name must be at least 2 characters', 'err');
+    return;
+  }
+  
+  var city = _editCity || CU.city;
+  
+  // Update user
+  CU.name = name;
+  CU.avatar = _editAv;
+  CU.city = city;
+  window.CU = CU;
+  
+  // Save to localStorage
+  var users = [];
+  try { users = JSON.parse(localStorage.getItem('sk_users')) || []; } catch(e){}
+  var idx = users.findIndex(function(u){ return u.id === CU.id; });
+  if (idx > -1) {
+    users[idx] = CU;
+    localStorage.setItem('sk_users', JSON.stringify(users));
+  }
+  if (typeof DB !== 'undefined') {
+    DB.set('users', users);
+  }
+  
+  closeEditProfile();
+  showToast('✓ Profile updated!', 'ok');
+  if (typeof renderProfile === 'function') renderProfile();
+  
+  // Update city in home header
+  var hcity = document.getElementById('hcity');
+  if (hcity) hcity.textContent = city;
+}
+
+// Wire edit profile modal
+document.addEventListener('DOMContentLoaded', function() {
+  // Avatar grid
+  var avGrid = document.getElementById('edit-av-grid');
+  if (avGrid) {
+    avGrid.addEventListener('touchstart', function(e) {
+      var el = e.target.closest('[data-emoji]');
+      if (!el) return;
+      e.preventDefault();
+      avGrid.querySelectorAll('[data-emoji]').forEach(function(a){ a.style.border='2px solid #2E2E2C'; });
+      el.style.border = '2px solid #C9922A';
+      _editAv = el.getAttribute('data-emoji');
+    }, {passive:false});
+    avGrid.addEventListener('click', function(e) {
+      var el = e.target.closest('[data-emoji]');
+      if (!el) return;
+      avGrid.querySelectorAll('[data-emoji]').forEach(function(a){ a.style.border='2px solid #2E2E2C'; });
+      el.style.border = '2px solid #C9922A';
+      _editAv = el.getAttribute('data-emoji');
+    });
+  }
+  
+  // City grid
+  var cgrid = document.getElementById('edit-city-grid');
+  if (cgrid) {
+    function pickEditCity(el) {
+      cgrid.querySelectorAll('[data-city]').forEach(function(c){
+        c.style.border='1.5px solid #2E2E2C'; c.style.color='#A09C94'; c.style.background='#1C1C1A';
+      });
+      el.style.border='1.5px solid #C9922A'; el.style.color='#C9922A'; el.style.background='rgba(201,146,42,.1)';
+      _editCity = el.getAttribute('data-city');
+    }
+    cgrid.addEventListener('touchstart', function(e){
+      var el=e.target.closest('[data-city]'); if(!el)return;
+      e.preventDefault(); pickEditCity(el);
+    }, {passive:false});
+    cgrid.addEventListener('click', function(e){
+      var el=e.target.closest('[data-city]'); if(!el)return;
+      pickEditCity(el);
+    });
+  }
+  
+  // Save button
+  var saveBtn = document.getElementById('save-profile-btn');
+  if (saveBtn) {
+    saveBtn.addEventListener('touchstart', function(e){ e.preventDefault(); saveProfile(); }, {passive:false});
+    saveBtn.addEventListener('click', saveProfile);
+  }
+  
+  // Cancel button
+  var cancelBtn = document.getElementById('cancel-profile-btn');
+  if (cancelBtn) {
+    cancelBtn.addEventListener('touchstart', function(e){ e.preventDefault(); closeEditProfile(); }, {passive:false});
+    cancelBtn.addEventListener('click', closeEditProfile);
+  }
+  
+  // Backdrop close
+  var modal = document.getElementById('edit-profile-modal');
+  if (modal) {
+    modal.addEventListener('touchstart', function(e){ if(e.target===modal){e.preventDefault();closeEditProfile();} }, {passive:false});
+    modal.addEventListener('click', function(e){ if(e.target===modal) closeEditProfile(); });
+  }
+});
 </script>
 </body>
 </html>
