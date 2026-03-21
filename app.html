@@ -451,7 +451,7 @@ select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=
 <div id="app">
 
 <!-- AUTH -->
-<div class="screen active" id="screen-auth" style="background:#0A0A0A;display:flex;flex-direction:column;overflow:hidden;position:relative">
+<div class="screen active" id="screen-auth" style="background:#0A0A0A;display:none;flex-direction:column;overflow:hidden;position:relative">
   <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:50px 28px 20px;pointer-events:none">
     <div style="font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#C9922A;margin-bottom:8px">Local Dreams Made Possible</div>
     <div style="font-family:'Playfair Display',serif;font-size:52px;font-weight:900;color:#fff;letter-spacing:-.03em;line-height:1;margin-bottom:8px">Skil<span style="color:#C9922A">yx</span></div>
@@ -536,7 +536,7 @@ select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=
           <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
           <span id="hcity">Johannesburg</span>, Gauteng
         </div>
-        <div class="hmast-logo">Skil<span>yx</span></div>
+        <div class="hmast-logo" ontouchstart="event.preventDefault();showDYK()" onclick="showDYK()" style="cursor:pointer">Skil<span>yx</span></div>
         <div style="font-family:var(--fb);font-size:9px;font-weight:600;color:rgba(255,255,255,.55);letter-spacing:.16em;text-transform:uppercase;margin-top:4px;font-size:10px">by Olerato Mongwe</div>
       </div>
       <div class="hmast-actions">
@@ -1005,9 +1005,15 @@ function nav(s, data={}) {
 function goBack() { if (SH.length) { CS=SH.pop(); showS(CS); } }
 
 function showS(s, data={}) {
-  document.querySelectorAll('.screen').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.screen').forEach(el=>{
+    el.classList.remove('active');
+    el.style.display='none';
+  });
   const el = document.getElementById('screen-'+s);
-  if (el) el.classList.add('active');
+  if (el) {
+    el.classList.add('active');
+    el.style.display='flex';
+  }
 
   if (!CU && window.CU) CU = window.CU;
   const bn = document.getElementById('bnav');
@@ -1260,7 +1266,7 @@ function renderListings(reset=false) {
       // bg
       const fb = document.getElementById('feat-bg');
       if (f.image) { fb.innerHTML=`<img src="${f.image}" alt="">`; }
-      else { fb.innerHTML=`<span id="feat-emoji">${f.catEmoji||'🛍️'}</span>`; }
+      else { fb.innerHTML=`<span id="feat-emoji2">${f.catEmoji||'🛍️'}</span>`; }
       // text
       document.getElementById('feat-cat').textContent   = (f.category||'general').replace('-',' ');
       document.getElementById('feat-title').textContent = f.title;
@@ -2358,6 +2364,67 @@ window.addEventListener('appinstalled', () => {
 </div>
 
 <script>
+var DYK_FACTS = [
+  { text: "Skilyx was built right here in South Africa — for South Africans, by someone who understands the hustle.", source: "🖤 About Skilyx" },
+  { text: "Every rand spent on Skilyx stays in the community. No big corporations, no middlemen — just people helping people.", source: "💛 Skilyx Mission" },
+  { text: "The name Skilyx was inspired by the skill and spirit it takes to build something from nothing in South Africa.", source: "🇿🇦 Skilyx Name" },
+  { text: "Skilyx believes that anyone — regardless of age, background or resources — can build something meaningful.", source: "✨ Skilyx Values" },
+  { text: "Small trades add up. Every listing on Skilyx is someone turning what they have into what they need.", source: "📱 Skilyx Vision" },
+  { text: "The best marketplaces aren't built by big companies — they're built by people who understand the community they serve.", source: "🌍 Skilyx Story" },
+  { text: "South Africa has 11 official languages — more than any other country in Africa.", source: "🇿🇦 SA Fun Fact" },
+  { text: "Johannesburg is one of the few major cities in the world not built near a river, lake or coastline.", source: "🏙️ Jozi Fact" },
+  { text: "The first heart transplant in the world was performed in Cape Town in 1967 by Dr Christiaan Barnard.", source: "🏥 SA Achievement" },
+  { text: "Pretoria is known as the Jacaranda City — over 70,000 jacaranda trees line its streets every spring.", source: "🌸 Pretoria Fact" },
+  { text: "The word 'ubuntu' means 'I am because we are' — the philosophy that inspired Skilyx's community-first approach.", source: "💛 Ubuntu" },
+  { text: "South Africa produces over 75% of the world's platinum supply.", source: "💎 SA Economy" },
+  { text: "The Cradle of Humankind near Johannesburg contains the world's richest site of early human fossils.", source: "🦴 Archaeology" },
+  { text: "Table Mountain is one of the oldest mountains in the world — approximately 600 million years old.", source: "⛰️ Cape Town Fact" },
+  { text: "Soweto is home to the only street in the world where two Nobel Peace Prize winners lived — Nelson Mandela and Desmond Tutu.", source: "🏠 Soweto Fact" },
+  { text: "South Africa has three capital cities — Pretoria (executive), Cape Town (legislative) and Bloemfontein (judicial).", source: "🏛️ SA Government" },
+  { text: "The Big 5 animals got their name not from size, but from being the most difficult to hunt on foot.", source: "🦁 Wildlife Fact" },
+  { text: "The rand (ZAR) is named after the Witwatersrand — the ridge of white waters where gold was first discovered.", source: "💰 SA Currency" },
+  { text: "Over 3 billion people globally use marketplaces to buy and sell. Skilyx is bringing that power to SA streets.", source: "🌍 Skilyx Vision" },
+  { text: "Some of the world's biggest companies were started by teenagers — Apple, Dell, and now Skilyx is writing its own chapter.", source: "🚀 Young Builders" },
+];
+
+var _lastDYK = -1;
+
+function showDYK() {
+  var modal = document.getElementById('dyk-modal');
+  if (!modal) return;
+
+  // Pick a random fact (not the same as last time)
+  var idx;
+  do { idx = Math.floor(Math.random() * DYK_FACTS.length); }
+  while (idx === _lastDYK && DYK_FACTS.length > 1);
+  _lastDYK = idx;
+
+  var fact = DYK_FACTS[idx];
+  document.getElementById('dyk-text').textContent = fact.text;
+  document.getElementById('dyk-source').textContent = fact.source;
+  modal.style.display = 'flex';
+}
+
+function closeDYK() {
+  var modal = document.getElementById('dyk-modal');
+  if (modal) modal.style.display = 'none';
+}
+
+// Close on backdrop tap
+document.addEventListener('DOMContentLoaded', function() {
+  var modal = document.getElementById('dyk-modal');
+  if (modal) {
+    modal.addEventListener('touchstart', function(e) {
+      if (e.target === modal) { e.preventDefault(); closeDYK(); }
+    }, {passive:false});
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) closeDYK();
+    });
+  }
+});
+</script>
+
+<script>
 // ═══ ONBOARDING v23 — NO RELOAD, DIRECT TRANSITION ═══
 (function() {
   var av = '🦁';
@@ -2496,10 +2563,13 @@ window.addEventListener('appinstalled', () => {
     var homeEl = document.getElementById('screen-home');
     var bnavEl = document.getElementById('bnav');
 
-    // Hide auth
-    if (authEl) { authEl.classList.remove('active'); authEl.style.display='none'; }
+    // Hide ALL screens first
+    document.querySelectorAll('.screen').forEach(function(s){
+      s.classList.remove('active');
+      s.style.display='none';
+    });
 
-    // Show home
+    // Show home only
     if (homeEl) { homeEl.classList.add('active'); homeEl.style.display='flex'; }
 
     // Show nav
