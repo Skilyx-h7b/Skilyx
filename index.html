@@ -2327,131 +2327,178 @@ window.addEventListener('appinstalled', () => {
 </div>
 
 <script>
-// ═══ ONBOARDING — CLEAN REWRITE ═══
+// ═══ ONBOARDING v23 — NO RELOAD, DIRECT TRANSITION ═══
 (function() {
   var av = '🦁';
   var city = '';
 
-  // ── Step switcher ──
   function show(n) {
-    document.getElementById('onb-1').style.display = n===1?'block':'none';
-    document.getElementById('onb-2').style.display = n===2?'block':'none';
-    document.getElementById('onb-3').style.display = n===3?'block':'none';
-    if (n===2) document.getElementById('av-preview').textContent = av;
+    for (var i=1; i<=3; i++) {
+      var el = document.getElementById('onb-'+i);
+      if (el) el.style.display = (i===n) ? 'block' : 'none';
+    }
+    if (n===2) {
+      var p = document.getElementById('av-preview');
+      if (p) p.textContent = av;
+    }
   }
 
-  // ── Avatar grid ──
-  document.getElementById('av-grid').addEventListener('touchstart', function(e) {
-    var el = e.target.closest('[data-emoji]');
-    if (!el) return;
-    e.preventDefault();
-    document.querySelectorAll('#av-grid [data-emoji]').forEach(function(a){
-      a.style.border = '2px solid #2E2E2C';
+  // Avatar grid
+  var grid = document.getElementById('av-grid');
+  if (grid) {
+    grid.addEventListener('touchstart', function(e) {
+      var el = e.target.closest('[data-emoji]');
+      if (!el) return;
+      e.preventDefault();
+      grid.querySelectorAll('[data-emoji]').forEach(function(a){
+        a.style.border = '2px solid #2E2E2C';
+      });
+      el.style.border = '2px solid #C9922A';
+      av = el.getAttribute('data-emoji');
+    }, {passive:false});
+    grid.addEventListener('click', function(e) {
+      var el = e.target.closest('[data-emoji]');
+      if (!el) return;
+      grid.querySelectorAll('[data-emoji]').forEach(function(a){
+        a.style.border = '2px solid #2E2E2C';
+      });
+      el.style.border = '2px solid #C9922A';
+      av = el.getAttribute('data-emoji');
     });
-    el.style.border = '2px solid #C9922A';
-    av = el.getAttribute('data-emoji');
-    window._onbAv = av;
-  }, {passive:false});
+  }
 
-  // ── City grid ──
-  document.getElementById('city-grid').addEventListener('touchstart', function(e) {
-    var el = e.target.closest('[data-city]');
-    if (!el) return;
-    e.preventDefault();
-    document.querySelectorAll('#city-grid [data-city]').forEach(function(c){
-      c.style.border = '1.5px solid #2E2E2C';
-      c.style.color = '#A09C94';
-      c.style.background = '#1C1C1A';
+  // City grid
+  var cgrid = document.getElementById('city-grid');
+  if (cgrid) {
+    function pickC(el) {
+      cgrid.querySelectorAll('[data-city]').forEach(function(c){
+        c.style.border='1.5px solid #2E2E2C';
+        c.style.color='#A09C94';
+        c.style.background='#1C1C1A';
+      });
+      el.style.border='1.5px solid #C9922A';
+      el.style.color='#C9922A';
+      el.style.background='rgba(201,146,42,.1)';
+      city = el.getAttribute('data-city');
+      var ow = document.getElementById('city-other-wrap');
+      if (ow) ow.style.display = city==='Other'?'block':'none';
+      var fb = document.getElementById('btn-finish');
+      if (fb) { fb.style.background='#C9922A'; fb.style.color='#fff'; fb.textContent='ENTER SKILYX →'; }
+    }
+    cgrid.addEventListener('touchstart', function(e){
+      var el = e.target.closest('[data-city]');
+      if (!el) return;
+      e.preventDefault();
+      pickC(el);
+    }, {passive:false});
+    cgrid.addEventListener('click', function(e){
+      var el = e.target.closest('[data-city]');
+      if (!el) return;
+      pickC(el);
     });
-    el.style.border = '1.5px solid #C9922A';
-    el.style.color = '#C9922A';
-    el.style.background = 'rgba(201,146,42,.1)';
-    city = el.getAttribute('data-city');
-    window._onbCity = city;
-    document.getElementById('city-other-wrap').style.display = city==='Other'?'block':'none';
-    // Enable finish button
-    var fb = document.getElementById('btn-finish');
-    fb.style.background = '#C9922A';
-    fb.style.color = '#fff';
-    fb.textContent = 'ENTER SKILYX →';
-  }, {passive:false});
+  }
 
-  // ── Buttons ──
-  function bind(id, fn) {
+  // Buttons
+  function btn(id, fn) {
     var el = document.getElementById(id);
     if (!el) return;
     el.addEventListener('touchstart', function(e){ e.preventDefault(); fn(); }, {passive:false});
     el.addEventListener('click', fn);
   }
 
-  bind('btn-next1', function() { show(2); });
+  btn('btn-next1', function(){ show(2); });
 
-  bind('btn-next2', function() {
-    var name = (document.getElementById('onb-name').value||'').trim();
+  btn('btn-next2', function(){
+    var name = ((document.getElementById('onb-name')||{}).value||'').trim();
     if (name.length < 2) {
-      document.getElementById('name-hint').textContent = 'Enter at least 2 characters';
-      document.getElementById('name-hint').style.color = '#C9922A';
-      document.getElementById('onb-name').focus();
+      var inp = document.getElementById('onb-name');
+      if (inp) inp.style.borderColor = '#C9922A';
       return;
     }
     show(3);
   });
 
-  bind('btn-back1', function() { show(1); });
-  bind('btn-back2', function() { show(2); });
+  btn('btn-back1', function(){ show(1); });
+  btn('btn-back2', function(){ show(2); });
 
-  bind('btn-finish', function() {
-    var name = (document.getElementById('onb-name').value||'').trim();
-    var c = window._onbCity || city || 'Johannesburg';
+  btn('btn-finish', function(){
+    var name = ((document.getElementById('onb-name')||{}).value||'').trim();
+    var c = city || 'Johannesburg';
     if (c === 'Other') {
-      c = (document.getElementById('city-other').value||'').trim() || 'South Africa';
+      c = ((document.getElementById('city-other')||{}).value||'').trim() || 'South Africa';
     }
-    if (!name || name.length < 2) { show(2); return; }
+    if (name.length < 2) { show(2); return; }
 
-    // Save user
+    // Build user
     var uid = Date.now().toString(36) + Math.random().toString(36).slice(2,6);
-    var users = [];
-    try { users = JSON.parse(localStorage.getItem('sk_users')) || []; } catch(e){}
+    var existing = [];
+    try { existing = JSON.parse(localStorage.getItem('sk_users')) || []; } catch(e){}
     var finalName = name;
-    if (users.some(function(u){ return u.name.toLowerCase()===name.toLowerCase(); })) {
+    if (existing.some(function(u){ return u.name && u.name.toLowerCase()===name.toLowerCase(); })) {
       finalName = name + (Math.floor(Math.random()*900)+100);
     }
     var user = {
-      id:uid, name:finalName, avatar:window._onbAv||av||'🦁', city:c,
-      role: users.length===0?'admin':'user',
+      id:uid, name:finalName, avatar:av||'🦁', city:c,
+      role: existing.length===0?'admin':'user',
       ratingAvg:0, ratingCount:0, ratingAsSeller:0, countAsSeller:0,
       ratingAsBuyer:0, countAsBuyer:0, totalTrades:0,
       wallet:0, listings:0, sales:0, is_suspended:false,
       joinedAt:new Date().toISOString()
     };
-    users.unshift(user);
-    // Save directly to localStorage
-    localStorage.setItem('sk_users', JSON.stringify(users));
+
+    // Save to localStorage
+    existing.unshift(user);
+    localStorage.setItem('sk_users', JSON.stringify(existing));
     localStorage.setItem('sk_session', JSON.stringify(uid));
-    // Also save via DB helper if available
-    if (typeof DB !== 'undefined') {
-      DB.set('users', users);
-      DB.set('session', uid);
-    }
+
+    // Set global CU
     window.CU = user;
+    if (typeof CU !== 'undefined') { try { CU = user; } catch(e){} }
 
-    // Save done — reload so DOMContentLoaded auto-login kicks in
-    var btn = document.getElementById('btn-finish');
-    btn.textContent = 'Entering Skilyx...';
-    btn.style.background = '#27AE60';
-    setTimeout(function(){ location.reload(); }, 300);
+    // ── DIRECT TRANSITION — no reload ──
+    var authEl = document.getElementById('screen-auth');
+    var homeEl = document.getElementById('screen-home');
+    var bnavEl = document.getElementById('bnav');
+
+    // Hide auth
+    if (authEl) { authEl.classList.remove('active'); authEl.style.display='none'; }
+
+    // Show home
+    if (homeEl) { homeEl.classList.add('active'); homeEl.style.display='flex'; }
+
+    // Show nav
+    if (bnavEl) bnavEl.style.display='block';
+
+    // Admin check
+    if (user.role==='admin') {
+      var am=document.getElementById('admmi'); if(am) am.style.display='flex';
+      var al=document.getElementById('admlnk'); if(al) al.style.display='flex';
+    }
+
+    // Load home content
+    if (typeof renderListings === 'function') { renderListings(true); }
+    if (typeof renderProfile === 'function') { renderProfile(); }
+
+    // Update city display
+    var hcity = document.getElementById('hcity');
+    if (hcity) hcity.textContent = c;
   });
 
-  // Name input hint
-  document.getElementById('onb-name').addEventListener('input', function() {
-    var v = this.value.trim();
-    var h = document.getElementById('name-hint');
-    if (!v) { h.textContent=''; return; }
-    if (v.length < 2) { h.style.color='#C9922A'; h.textContent='Keep going…'; }
-    else { h.style.color='#27AE60'; h.textContent='✓ Looks good'; }
-  });
+  // Name input live hint
+  var ni = document.getElementById('onb-name');
+  if (ni) {
+    ni.addEventListener('input', function(){
+      var v = this.value.trim();
+      var h = document.getElementById('name-hint');
+      if (!h) return;
+      if (!v) { h.textContent=''; return; }
+      if (v.length<2) { h.style.color='#C9922A'; h.textContent='Keep going…'; }
+      else { h.style.color='#27AE60'; h.textContent='✓ Looks good'; }
+    });
+  }
 
 })();
 </script>
+
 </body>
 </html>
