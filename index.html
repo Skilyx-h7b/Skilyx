@@ -932,17 +932,8 @@ const DB = {
 
 // ── WIPE ALL DEMO DATA — runs once on every device ──────────────
 function clearDemoData() {
-  const version = 'clean_v3';
-  if (DB.get(version)) return; // already wiped on this device
-
-  // Nuke every single Skilyx key from localStorage
-  const keysToDelete = Object.keys(localStorage)
-    .filter(k => k.startsWith('sk_'));
-  keysToDelete.forEach(k => localStorage.removeItem(k));
-
-  // Mark this device as clean — never seed again
-  DB.set(version, true);
-  console.log('Skilyx: fresh start — all demo data removed');
+  // Already cleaned — never run again
+  DB.set('clean_v3', true);
 }
 
 // ── HELPERS ─────────────────────────────────────────────────────
