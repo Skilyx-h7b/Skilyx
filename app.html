@@ -2178,16 +2178,36 @@ window.addEventListener('DOMContentLoaded', function() {
   // ── Deep links ──
   setTimeout(handleDeepLink, 800);
   // ── Auto-login if session exists ──
+  // Try DB helper first
   var sessId = DB.get('session');
+  // Also try direct localStorage in case of key format difference
+  if (!sessId) {
+    try {
+      var raw = localStorage.getItem('sk_session');
+      if (raw) sessId = JSON.parse(raw);
+    } catch(e) {}
+  }
+
   if (sessId) {
+    // Try DB helper first
     var users = DB.all('users');
+    // Also try direct localStorage
+    if (!users || users.length === 0) {
+      try {
+        var rawUsers = localStorage.getItem('sk_users');
+        if (rawUsers) users = JSON.parse(rawUsers);
+      } catch(e) {}
+    }
     var user = null;
-    for (var i=0; i<users.length; i++) {
-      if (users[i].id === sessId) { user = users[i]; break; }
+    if (users) {
+      for (var i=0; i<users.length; i++) {
+        if (users[i] && users[i].id === sessId) { user = users[i]; break; }
+      }
     }
     if (user) {
       CU = user;
-      if (hasPin()) {
+      window.CU = user;
+      if (typeof hasPin === 'function' && hasPin()) {
         afterLogin();
         setTimeout(function(){ showPinScreen(); }, 200);
       } else {
@@ -2405,8 +2425,14 @@ window.addEventListener('appinstalled', () => {
       joinedAt:new Date().toISOString()
     };
     users.unshift(user);
+    // Save directly to localStorage
     localStorage.setItem('sk_users', JSON.stringify(users));
     localStorage.setItem('sk_session', JSON.stringify(uid));
+    // Also save via DB helper if available
+    if (typeof DB !== 'undefined') {
+      DB.set('users', users);
+      DB.set('session', uid);
+    }
     window.CU = user;
 
     // Save done — reload so DOMContentLoaded auto-login kicks in
