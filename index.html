@@ -1,22 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" href="icons/icon-192.png">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Skilyx">
-  <meta name="application-name" content="Skilyx">
-  <meta name="msapplication-TileColor" content="#0A0A0A">
-  <meta name="msapplication-TileImage" content="icons/icon-144.png">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#0A0A0A">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Skilyx">
 <title>Skilyx — Local Dreams Made Possible</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -457,216 +446,82 @@ select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns=
 .pin-setup-title{font-family:var(--fh);font-size:20px;font-weight:700;color:var(--txt);margin-bottom:4px}
 .pin-setup-sub{font-size:13px;color:var(--txt3);margin-bottom:24px;line-height:1.5}
 </style>
-
-<script>
-var _onbAv = '🦁';
-var _onbCity = '';
-
-function goStep(n) {
-  if (n === 3) {
-    var nm = ((document.getElementById('onb-name')||{}).value||'').trim();
-    if (nm.length < 2) {
-      var inp = document.getElementById('onb-name');
-      if (inp) { inp.style.borderColor='#C9922A'; inp.focus(); }
-      return;
-    }
-  }
-  for (var i=1; i<=3; i++) {
-    var el = document.getElementById('onb-'+i);
-    if (el) el.style.display = (i===n) ? 'block' : 'none';
-  }
-  if (n===2) {
-    var prev = document.getElementById('onb-av-preview');
-    if (prev) prev.textContent = _onbAv;
-  }
-}
-
-function selectAvatar(id, emoji) {
-  ['av-lion','av-tiger','av-fox','av-butterfly','av-moon','av-bolt',
-   'av-wave','av-fire','av-diamond','av-leaf','av-target','av-rocket',
-   'av-masks','av-flower','av-crown'].forEach(function(aid){
-    var a=document.getElementById(aid);
-    if(a) a.style.border='2px solid #2E2E2C';
-  });
-  var el=document.getElementById(id);
-  if(el) el.style.border='2px solid #C9922A';
-  _onbAv = emoji;
-}
-
-
-function finishOnboarding() {
-  var nameEl = document.getElementById('onb-name');
-  var name = nameEl ? nameEl.value.trim() : '';
-  if (name.length < 2) { goStep(2); return; }
-
-  var city = window._onbCity || _onbCity || 'Johannesburg';
-  if (city === 'Other') {
-    var oc = document.getElementById('city-other');
-    city = oc && oc.value.trim() ? oc.value.trim() : 'South Africa';
-  }
-
-  var btn = document.getElementById('finish-btn');
-  if (btn) { btn.textContent = 'Entering...'; btn.style.opacity = '0.7'; }
-
-  // Build user directly — no dependency on main JS scope
-  var uid_val = Date.now().toString(36) + Math.random().toString(36).slice(2,7);
-  var existing = [];
-  try { existing = JSON.parse(localStorage.getItem('sk_users')) || []; } catch(e){}
-  
-  // Check name taken
-  var finalName = name;
-  if (existing.find(function(u){ return u.name.toLowerCase()===name.toLowerCase(); })) {
-    finalName = name + (Math.floor(Math.random()*900)+100);
-  }
-
-  var user = {
-    id: uid_val,
-    name: finalName,
-    avatar: window._onbAv || _onbAv || '🦁',
-    city: city,
-    role: existing.length === 0 ? 'admin' : 'user',
-    ratingAvg:0, ratingCount:0,
-    ratingAsSeller:0, countAsSeller:0,
-    ratingAsBuyer:0, countAsBuyer:0,
-    totalTrades:0, wallet:0, listings:0, sales:0,
-    is_suspended:false,
-    joinedAt: new Date().toISOString()
-  };
-
-  // Save to localStorage
-  existing.unshift(user);
-  localStorage.setItem('sk_users', JSON.stringify(existing));
-  localStorage.setItem('sk_session', JSON.stringify(user.id));
-
-  // Save to window so main JS can pick it up
-  window.CU = user;
-  window._pendingUser = user;
-
-  // Try to navigate — retry until main JS is ready
-  var _tries = 0;
-  function tryNav() {
-    _tries++;
-    if (typeof nav === 'function' && typeof showS === 'function') {
-      CU = user;
-      window.CU = user;
-      if (user.role === 'admin') {
-        var am = document.getElementById('admmi');
-        var al = document.getElementById('admlnk');
-        if (am) am.style.display = 'flex';
-        if (al) al.style.display = 'flex';
-      }
-      // Hide auth screen directly
-      var authEl = document.getElementById('screen-auth');
-      if (authEl) authEl.style.display = 'none';
-      // Show home screen directly
-      var homeEl = document.getElementById('screen-home');
-      if (homeEl) {
-        homeEl.classList.add('active');
-        homeEl.style.display = 'flex';
-      }
-      // Show bottom nav
-      var bnav = document.getElementById('bnav');
-      if (bnav) bnav.style.display = 'block';
-      // Use nav() to set up properly
-      nav('home');
-    } else if (_tries < 40) {
-      setTimeout(tryNav, 100);
-    } else {
-      // Session saved — reload will auto-login
-      window.location.reload();
-    }
-  }
-  tryNav();
-}
-</script>
 </head>
 <body>
 <div id="app">
 
-<!-- ═══ AUTH ═══ -->
+<!-- AUTH -->
 <div class="screen active" id="screen-auth" style="background:#0A0A0A;display:flex;flex-direction:column;overflow:hidden;position:relative">
-
-  <!-- Branding -->
-  <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:50px 28px 20px;pointer-events:none;min-height:0">
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:50px 28px 20px;pointer-events:none">
     <div style="font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#C9922A;margin-bottom:8px">Local Dreams Made Possible</div>
     <div style="font-family:'Playfair Display',serif;font-size:52px;font-weight:900;color:#fff;letter-spacing:-.03em;line-height:1;margin-bottom:8px">Skil<span style="color:#C9922A">yx</span></div>
     <div style="font-size:10px;font-weight:600;color:rgba(255,255,255,.55);letter-spacing:.16em;text-transform:uppercase;margin-bottom:10px">by Olerato Mongwe</div>
     <div style="font-family:'Playfair Display',serif;font-style:italic;font-size:15px;color:rgba(255,255,255,.55)">"Where every local dream finds its market."</div>
   </div>
 
-  <!-- STEP 1: Avatar — fixed height so button always visible -->
-  <div id="onb-1" style="background:#141412;border-radius:24px 24px 0 0;padding:20px 22px max(20px,env(safe-area-inset-bottom));flex-shrink:0">
+  <div id="onb-1" style="background:#141412;border-radius:24px 24px 0 0;padding:20px 22px 32px;flex-shrink:0">
     <div style="width:34px;height:3px;background:#333;border-radius:2px;margin:0 auto 16px"></div>
     <div style="font-family:'Playfair Display',serif;font-size:19px;font-weight:700;color:#E8E4DC;margin-bottom:4px">Pick your avatar</div>
     <div style="font-size:12px;color:#606060;margin-bottom:14px">No email. No password. Just pick who you are and start trading.</div>
     <div id="av-grid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:16px">
-      <div id="av-lion" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #C9922A;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer" ontouchstart="event.preventDefault();selectAvatar('av-lion','🦁')" onclick="selectAvatar('av-lion','🦁')">🦁</div>
-      <div id="av-tiger" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer" ontouchstart="event.preventDefault();selectAvatar('av-tiger','🐯')" onclick="selectAvatar('av-tiger','🐯')">🐯</div>
-      <div id="av-fox" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer" ontouchstart="event.preventDefault();selectAvatar('av-fox','🦊')" onclick="selectAvatar('av-fox','🦊')">🦊</div>
-      <div id="av-butterfly" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer" ontouchstart="event.preventDefault();selectAvatar('av-butterfly','🦋')" onclick="selectAvatar('av-butterfly','🦋')">🦋</div>
-      <div id="av-moon" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer" ontouchstart="event.preventDefault();selectAvatar('av-moon','🌙')" onclick="selectAvatar('av-moon','🌙')">🌙</div>
-      <div id="av-bolt" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer" ontouchstart="event.preventDefault();selectAvatar('av-bolt','⚡')" onclick="selectAvatar('av-bolt','⚡')">⚡</div>
-      <div id="av-wave" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer" ontouchstart="event.preventDefault();selectAvatar('av-wave','🌊')" onclick="selectAvatar('av-wave','🌊')">🌊</div>
-      <div id="av-fire" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer" ontouchstart="event.preventDefault();selectAvatar('av-fire','🔥')" onclick="selectAvatar('av-fire','🔥')">🔥</div>
-      <div id="av-diamond" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer" ontouchstart="event.preventDefault();selectAvatar('av-diamond','💎')" onclick="selectAvatar('av-diamond','💎')">💎</div>
-      <div id="av-leaf" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer" ontouchstart="event.preventDefault();selectAvatar('av-leaf','🌿')" onclick="selectAvatar('av-leaf','🌿')">🌿</div>
-      <div id="av-target" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer" ontouchstart="event.preventDefault();selectAvatar('av-target','🎯')" onclick="selectAvatar('av-target','🎯')">🎯</div>
-      <div id="av-rocket" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer" ontouchstart="event.preventDefault();selectAvatar('av-rocket','🚀')" onclick="selectAvatar('av-rocket','🚀')">🚀</div>
-      <div id="av-masks" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer" ontouchstart="event.preventDefault();selectAvatar('av-masks','🎭')" onclick="selectAvatar('av-masks','🎭')">🎭</div>
-      <div id="av-flower" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer" ontouchstart="event.preventDefault();selectAvatar('av-flower','🌸')" onclick="selectAvatar('av-flower','🌸')">🌸</div>
-      <div id="av-crown" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer" ontouchstart="event.preventDefault();selectAvatar('av-crown','👑')" onclick="selectAvatar('av-crown','👑')">👑</div>
+      <div id="av-0" data-emoji="🦁" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #C9922A;display:flex;align-items:center;justify-content:center;font-size:24px">🦁</div>
+      <div id="av-1" data-emoji="🐯" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px">🐯</div>
+      <div id="av-2" data-emoji="🦊" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px">🦊</div>
+      <div id="av-3" data-emoji="🦋" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px">🦋</div>
+      <div id="av-4" data-emoji="🌙" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px">🌙</div>
+      <div id="av-5" data-emoji="⚡" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px">⚡</div>
+      <div id="av-6" data-emoji="🌊" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px">🌊</div>
+      <div id="av-7" data-emoji="🔥" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px">🔥</div>
+      <div id="av-8" data-emoji="💎" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px">💎</div>
+      <div id="av-9" data-emoji="🌿" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px">🌿</div>
+      <div id="av-10" data-emoji="🎯" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px">🎯</div>
+      <div id="av-11" data-emoji="🚀" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px">🚀</div>
+      <div id="av-12" data-emoji="🎭" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px">🎭</div>
+      <div id="av-13" data-emoji="🌸" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px">🌸</div>
+      <div id="av-14" data-emoji="👑" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px">👑</div>
     </div>
-    <button id="next1-btn" 
-  style="width:100%;padding:16px;background:#C9922A;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;display:block;cursor:pointer"
-  ontouchstart="event.preventDefault();goStep(2)" onclick="goStep(2)">NEXT →</button>
+    <button id="btn-next1" style="width:100%;padding:16px;background:#C9922A;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;display:block;cursor:pointer">NEXT →</button>
   </div>
 
-  <!-- STEP 2: Name -->
-  <div id="onb-2" style="display:none;background:#141412;border-radius:24px 24px 0 0;padding:24px 22px max(24px,env(safe-area-inset-bottom));flex-shrink:0">
+  <div id="onb-2" style="display:none;background:#141412;border-radius:24px 24px 0 0;padding:24px 22px 32px;flex-shrink:0">
     <div style="width:34px;height:3px;background:#333;border-radius:2px;margin:0 auto 18px"></div>
-    <div id="onb-av-preview" style="font-size:44px;text-align:center;margin-bottom:12px">🦁</div>
+    <div id="av-preview" style="font-size:44px;text-align:center;margin-bottom:12px">🦁</div>
     <div style="font-family:'Playfair Display',serif;font-size:19px;font-weight:700;color:#E8E4DC;margin-bottom:4px">What do people call you?</div>
     <div style="font-size:12px;color:#606060;margin-bottom:18px">A name or handle — buyers and sellers will see this.</div>
     <div style="margin-bottom:18px">
       <div style="font-size:11px;font-weight:700;color:#A09C94;text-transform:uppercase;letter-spacing:.09em;margin-bottom:7px">Your Name</div>
       <input id="onb-name" type="text" maxlength="30" placeholder="e.g. Olerato or OleratoJHB"
-        style="width:100%;background:#202020;border:1.5px solid #303030;border-radius:11px;padding:13px 16px;color:#E8E4DC;font-size:15px;outline:none;box-sizing:border-box;font-family:Outfit,sans-serif">
-      <div id="hint-onb-name" style="font-size:11px;margin-top:5px;min-height:16px;color:#606060"></div>
+        style="width:100%;background:#202020;border:1.5px solid #303030;border-radius:11px;padding:13px 16px;color:#E8E4DC;font-size:15px;outline:none;box-sizing:border-box;font-family:Outfit,sans-serif;-webkit-appearance:none">
+      <div id="name-hint" style="font-size:11px;margin-top:5px;min-height:16px;color:#606060"></div>
     </div>
-    <button id="next2-btn"
-  style="width:100%;padding:16px;background:#C9922A;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;display:block;cursor:pointer"
-  ontouchstart="event.preventDefault();goStep(3)" onclick="goStep(3)">NEXT →</button>
-    <button id="back1-btn" style="width:100%;padding:12px;background:none;border:none;color:#606060;font-size:13px;font-family:Outfit,sans-serif;cursor:pointer" ontouchstart="event.preventDefault();goStep(1)" onclick="goStep(1)">← Back</button>
+    <button id="btn-next2" style="width:100%;padding:16px;background:#C9922A;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;display:block;cursor:pointer">NEXT →</button>
+    <button id="btn-back1" style="width:100%;padding:12px;background:none;border:none;color:#606060;font-size:13px;font-family:Outfit,sans-serif;cursor:pointer">← Back</button>
   </div>
 
-  <!-- STEP 3: City -->
-  <div id="onb-3" style="display:none;background:#141412;border-radius:24px 24px 0 0;padding:20px 22px max(20px,env(safe-area-inset-bottom));max-height:70vh;overflow-y:auto;flex-shrink:0">
+  <div id="onb-3" style="display:none;background:#141412;border-radius:24px 24px 0 0;padding:20px 22px 32px;max-height:70vh;overflow-y:auto;flex-shrink:0">
     <div style="width:34px;height:3px;background:#333;border-radius:2px;margin:0 auto 16px"></div>
     <div style="font-family:'Playfair Display',serif;font-size:19px;font-weight:700;color:#E8E4DC;margin-bottom:4px">Where are you based?</div>
     <div style="font-size:12px;color:#606060;margin-bottom:16px">Helps people find deals near them.</div>
     <div id="city-grid" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px">
-  <div class="city-opt" data-city="Johannesburg" style="padding:9px 15px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:13px;font-weight:600;color:#A09C94;cursor:pointer" ontouchstart="event.preventDefault();pickCityInline(this,'Johannesburg')" onclick="pickCityInline(this,'Johannesburg')">Johannesburg</div>
-  <div class="city-opt" data-city="Cape Town" style="padding:9px 15px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:13px;font-weight:600;color:#A09C94;cursor:pointer" ontouchstart="event.preventDefault();pickCityInline(this,'Cape Town')" onclick="pickCityInline(this,'Cape Town')">Cape Town</div>
-  <div class="city-opt" data-city="Durban" style="padding:9px 15px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:13px;font-weight:600;color:#A09C94;cursor:pointer" ontouchstart="event.preventDefault();pickCityInline(this,'Durban')" onclick="pickCityInline(this,'Durban')">Durban</div>
-  <div class="city-opt" data-city="Pretoria" style="padding:9px 15px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:13px;font-weight:600;color:#A09C94;cursor:pointer" ontouchstart="event.preventDefault();pickCityInline(this,'Pretoria')" onclick="pickCityInline(this,'Pretoria')">Pretoria</div>
-  <div class="city-opt" data-city="Port Elizabeth" style="padding:9px 15px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:13px;font-weight:600;color:#A09C94;cursor:pointer" ontouchstart="event.preventDefault();pickCityInline(this,'Port Elizabeth')" onclick="pickCityInline(this,'Port Elizabeth')">Port Elizabeth</div>
-  <div class="city-opt" data-city="Bloemfontein" style="padding:9px 15px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:13px;font-weight:600;color:#A09C94;cursor:pointer" ontouchstart="event.preventDefault();pickCityInline(this,'Bloemfontein')" onclick="pickCityInline(this,'Bloemfontein')">Bloemfontein</div>
-  <div class="city-opt" data-city="Soweto" style="padding:9px 15px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:13px;font-weight:600;color:#A09C94;cursor:pointer" ontouchstart="event.preventDefault();pickCityInline(this,'Soweto')" onclick="pickCityInline(this,'Soweto')">Soweto</div>
-  <div class="city-opt" data-city="Sandton" style="padding:9px 15px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:13px;font-weight:600;color:#A09C94;cursor:pointer" ontouchstart="event.preventDefault();pickCityInline(this,'Sandton')" onclick="pickCityInline(this,'Sandton')">Sandton</div>
-  <div class="city-opt" data-city="Midrand" style="padding:9px 15px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:13px;font-weight:600;color:#A09C94;cursor:pointer" ontouchstart="event.preventDefault();pickCityInline(this,'Midrand')" onclick="pickCityInline(this,'Midrand')">Midrand</div>
-  <div class="city-opt" data-city="East London" style="padding:9px 15px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:13px;font-weight:600;color:#A09C94;cursor:pointer" ontouchstart="event.preventDefault();pickCityInline(this,'East London')" onclick="pickCityInline(this,'East London')">East London</div>
-  <div class="city-opt" data-city="Centurion" style="padding:9px 15px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:13px;font-weight:600;color:#A09C94;cursor:pointer" ontouchstart="event.preventDefault();pickCityInline(this,'Centurion')" onclick="pickCityInline(this,'Centurion')">Centurion</div>
-  <div class="city-opt" data-city="Other" style="padding:9px 15px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:13px;font-weight:600;color:#A09C94;cursor:pointer" ontouchstart="event.preventDefault();pickCityInline(this,'Other')" onclick="pickCityInline(this,'Other')">Other</div>
-</div>
-    <div id="city-hint" style="font-size:12px;color:#606060;margin:-8px 0 10px">Tap your city to continue</div>
+      <div data-city="Johannesburg"  style="padding:9px 15px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">Johannesburg</div>
+      <div data-city="Cape Town"     style="padding:9px 15px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">Cape Town</div>
+      <div data-city="Durban"        style="padding:9px 15px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">Durban</div>
+      <div data-city="Pretoria"      style="padding:9px 15px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">Pretoria</div>
+      <div data-city="Port Elizabeth" style="padding:9px 15px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">Port Elizabeth</div>
+      <div data-city="Bloemfontein"  style="padding:9px 15px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">Bloemfontein</div>
+      <div data-city="Soweto"        style="padding:9px 15px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">Soweto</div>
+      <div data-city="Sandton"       style="padding:9px 15px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">Sandton</div>
+      <div data-city="Midrand"       style="padding:9px 15px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">Midrand</div>
+      <div data-city="East London"   style="padding:9px 15px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">East London</div>
+      <div data-city="Centurion"     style="padding:9px 15px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">Centurion</div>
+      <div data-city="Other"         style="padding:9px 15px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">Other</div>
+    </div>
     <div id="city-other-wrap" style="display:none;margin-bottom:14px">
       <input id="city-other" type="text" placeholder="Type your city…"
         style="width:100%;background:#202020;border:1.5px solid #303030;border-radius:11px;padding:13px 16px;color:#E8E4DC;font-size:15px;outline:none;box-sizing:border-box">
     </div>
-    <button id="finish-btn"
-  style="width:100%;padding:16px;background:#0A0A0A;color:#fff;border:1.5px solid #2E2E2C;border-radius:12px;font-size:15px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;display:block;cursor:pointer"
-  ontouchstart="event.preventDefault();finishOnboarding()" onclick="finishOnboarding()">ENTER SKILYX →</button>
-    <button id="back2-btn" style="width:100%;padding:12px;background:none;border:none;color:#606060;font-size:13px;font-family:Outfit,sans-serif;cursor:pointer" ontouchstart="event.preventDefault();goStep(2)" onclick="goStep(2)">← Back</button>
+    <button id="btn-finish" style="width:100%;padding:16px;background:#2E2E2C;color:#A09C94;border:none;border-radius:12px;font-size:15px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;display:block;cursor:pointer">PICK A CITY FIRST</button>
+    <button id="btn-back2" style="width:100%;padding:12px;background:none;border:none;color:#606060;font-size:13px;font-family:Outfit,sans-serif;cursor:pointer">← Back</button>
   </div>
 </div>
 
@@ -2558,6 +2413,148 @@ window.addEventListener('appinstalled', () => {
     <div style="height:20px"></div>
   </div></div>
 </div>
+
+<script>
+// ═══ ONBOARDING — CLEAN REWRITE ═══
+(function() {
+  var av = '🦁';
+  var city = '';
+
+  // ── Step switcher ──
+  function show(n) {
+    document.getElementById('onb-1').style.display = n===1?'block':'none';
+    document.getElementById('onb-2').style.display = n===2?'block':'none';
+    document.getElementById('onb-3').style.display = n===3?'block':'none';
+    if (n===2) document.getElementById('av-preview').textContent = av;
+  }
+
+  // ── Avatar grid ──
+  document.getElementById('av-grid').addEventListener('touchstart', function(e) {
+    var el = e.target.closest('[data-emoji]');
+    if (!el) return;
+    e.preventDefault();
+    document.querySelectorAll('#av-grid [data-emoji]').forEach(function(a){
+      a.style.border = '2px solid #2E2E2C';
+    });
+    el.style.border = '2px solid #C9922A';
+    av = el.getAttribute('data-emoji');
+    window._onbAv = av;
+  }, {passive:false});
+
+  // ── City grid ──
+  document.getElementById('city-grid').addEventListener('touchstart', function(e) {
+    var el = e.target.closest('[data-city]');
+    if (!el) return;
+    e.preventDefault();
+    document.querySelectorAll('#city-grid [data-city]').forEach(function(c){
+      c.style.border = '1.5px solid #2E2E2C';
+      c.style.color = '#A09C94';
+      c.style.background = '#1C1C1A';
+    });
+    el.style.border = '1.5px solid #C9922A';
+    el.style.color = '#C9922A';
+    el.style.background = 'rgba(201,146,42,.1)';
+    city = el.getAttribute('data-city');
+    window._onbCity = city;
+    document.getElementById('city-other-wrap').style.display = city==='Other'?'block':'none';
+    // Enable finish button
+    var fb = document.getElementById('btn-finish');
+    fb.style.background = '#C9922A';
+    fb.style.color = '#fff';
+    fb.textContent = 'ENTER SKILYX →';
+  }, {passive:false});
+
+  // ── Buttons ──
+  function bind(id, fn) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('touchstart', function(e){ e.preventDefault(); fn(); }, {passive:false});
+    el.addEventListener('click', fn);
+  }
+
+  bind('btn-next1', function() { show(2); });
+
+  bind('btn-next2', function() {
+    var name = (document.getElementById('onb-name').value||'').trim();
+    if (name.length < 2) {
+      document.getElementById('name-hint').textContent = 'Enter at least 2 characters';
+      document.getElementById('name-hint').style.color = '#C9922A';
+      document.getElementById('onb-name').focus();
+      return;
+    }
+    show(3);
+  });
+
+  bind('btn-back1', function() { show(1); });
+  bind('btn-back2', function() { show(2); });
+
+  bind('btn-finish', function() {
+    var name = (document.getElementById('onb-name').value||'').trim();
+    var c = window._onbCity || city || 'Johannesburg';
+    if (c === 'Other') {
+      c = (document.getElementById('city-other').value||'').trim() || 'South Africa';
+    }
+    if (!name || name.length < 2) { show(2); return; }
+
+    // Save user
+    var uid = Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+    var users = [];
+    try { users = JSON.parse(localStorage.getItem('sk_users')) || []; } catch(e){}
+    var finalName = name;
+    if (users.some(function(u){ return u.name.toLowerCase()===name.toLowerCase(); })) {
+      finalName = name + (Math.floor(Math.random()*900)+100);
+    }
+    var user = {
+      id:uid, name:finalName, avatar:window._onbAv||av||'🦁', city:c,
+      role: users.length===0?'admin':'user',
+      ratingAvg:0, ratingCount:0, ratingAsSeller:0, countAsSeller:0,
+      ratingAsBuyer:0, countAsBuyer:0, totalTrades:0,
+      wallet:0, listings:0, sales:0, is_suspended:false,
+      joinedAt:new Date().toISOString()
+    };
+    users.unshift(user);
+    localStorage.setItem('sk_users', JSON.stringify(users));
+    localStorage.setItem('sk_session', JSON.stringify(uid));
+    window.CU = user;
+
+    // Enter app
+    var btn = document.getElementById('btn-finish');
+    btn.textContent = 'Entering...';
+
+    function tryEnter(tries) {
+      if (typeof nav === 'function') {
+        CU = user;
+        document.getElementById('screen-auth').style.display = 'none';
+        document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
+        var home = document.getElementById('screen-home');
+        if (home) { home.style.display='flex'; home.classList.add('active'); }
+        var bnav = document.getElementById('bnav');
+        if (bnav) bnav.style.display = 'block';
+        if (user.role==='admin') {
+          var am=document.getElementById('admmi'); if(am) am.style.display='flex';
+          var al=document.getElementById('admlnk'); if(al) al.style.display='flex';
+        }
+        nav('home');
+      } else if (tries < 50) {
+        setTimeout(function(){ tryEnter(tries+1); }, 100);
+      } else {
+        location.reload();
+      }
+    }
+    tryEnter(0);
+  });
+
+  // Name input hint
+  document.getElementById('onb-name').addEventListener('input', function() {
+    var v = this.value.trim();
+    var h = document.getElementById('name-hint');
+    if (!v) { h.textContent=''; return; }
+    if (v.length < 2) { h.style.color='#C9922A'; h.textContent='Keep going…'; }
+    else { h.style.color='#27AE60'; h.textContent='✓ Looks good'; }
+  });
+
+})();
+</script>
 </body>
 </html><script>
 var _onbAv = '🦁';
@@ -5061,5 +5058,147 @@ window.addEventListener('appinstalled', () => {
     <div style="height:20px"></div>
   </div></div>
 </div>
+
+<script>
+// ═══ ONBOARDING — CLEAN REWRITE ═══
+(function() {
+  var av = '🦁';
+  var city = '';
+
+  // ── Step switcher ──
+  function show(n) {
+    document.getElementById('onb-1').style.display = n===1?'block':'none';
+    document.getElementById('onb-2').style.display = n===2?'block':'none';
+    document.getElementById('onb-3').style.display = n===3?'block':'none';
+    if (n===2) document.getElementById('av-preview').textContent = av;
+  }
+
+  // ── Avatar grid ──
+  document.getElementById('av-grid').addEventListener('touchstart', function(e) {
+    var el = e.target.closest('[data-emoji]');
+    if (!el) return;
+    e.preventDefault();
+    document.querySelectorAll('#av-grid [data-emoji]').forEach(function(a){
+      a.style.border = '2px solid #2E2E2C';
+    });
+    el.style.border = '2px solid #C9922A';
+    av = el.getAttribute('data-emoji');
+    window._onbAv = av;
+  }, {passive:false});
+
+  // ── City grid ──
+  document.getElementById('city-grid').addEventListener('touchstart', function(e) {
+    var el = e.target.closest('[data-city]');
+    if (!el) return;
+    e.preventDefault();
+    document.querySelectorAll('#city-grid [data-city]').forEach(function(c){
+      c.style.border = '1.5px solid #2E2E2C';
+      c.style.color = '#A09C94';
+      c.style.background = '#1C1C1A';
+    });
+    el.style.border = '1.5px solid #C9922A';
+    el.style.color = '#C9922A';
+    el.style.background = 'rgba(201,146,42,.1)';
+    city = el.getAttribute('data-city');
+    window._onbCity = city;
+    document.getElementById('city-other-wrap').style.display = city==='Other'?'block':'none';
+    // Enable finish button
+    var fb = document.getElementById('btn-finish');
+    fb.style.background = '#C9922A';
+    fb.style.color = '#fff';
+    fb.textContent = 'ENTER SKILYX →';
+  }, {passive:false});
+
+  // ── Buttons ──
+  function bind(id, fn) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('touchstart', function(e){ e.preventDefault(); fn(); }, {passive:false});
+    el.addEventListener('click', fn);
+  }
+
+  bind('btn-next1', function() { show(2); });
+
+  bind('btn-next2', function() {
+    var name = (document.getElementById('onb-name').value||'').trim();
+    if (name.length < 2) {
+      document.getElementById('name-hint').textContent = 'Enter at least 2 characters';
+      document.getElementById('name-hint').style.color = '#C9922A';
+      document.getElementById('onb-name').focus();
+      return;
+    }
+    show(3);
+  });
+
+  bind('btn-back1', function() { show(1); });
+  bind('btn-back2', function() { show(2); });
+
+  bind('btn-finish', function() {
+    var name = (document.getElementById('onb-name').value||'').trim();
+    var c = window._onbCity || city || 'Johannesburg';
+    if (c === 'Other') {
+      c = (document.getElementById('city-other').value||'').trim() || 'South Africa';
+    }
+    if (!name || name.length < 2) { show(2); return; }
+
+    // Save user
+    var uid = Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+    var users = [];
+    try { users = JSON.parse(localStorage.getItem('sk_users')) || []; } catch(e){}
+    var finalName = name;
+    if (users.some(function(u){ return u.name.toLowerCase()===name.toLowerCase(); })) {
+      finalName = name + (Math.floor(Math.random()*900)+100);
+    }
+    var user = {
+      id:uid, name:finalName, avatar:window._onbAv||av||'🦁', city:c,
+      role: users.length===0?'admin':'user',
+      ratingAvg:0, ratingCount:0, ratingAsSeller:0, countAsSeller:0,
+      ratingAsBuyer:0, countAsBuyer:0, totalTrades:0,
+      wallet:0, listings:0, sales:0, is_suspended:false,
+      joinedAt:new Date().toISOString()
+    };
+    users.unshift(user);
+    localStorage.setItem('sk_users', JSON.stringify(users));
+    localStorage.setItem('sk_session', JSON.stringify(uid));
+    window.CU = user;
+
+    // Enter app
+    var btn = document.getElementById('btn-finish');
+    btn.textContent = 'Entering...';
+
+    function tryEnter(tries) {
+      if (typeof nav === 'function') {
+        CU = user;
+        document.getElementById('screen-auth').style.display = 'none';
+        document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
+        var home = document.getElementById('screen-home');
+        if (home) { home.style.display='flex'; home.classList.add('active'); }
+        var bnav = document.getElementById('bnav');
+        if (bnav) bnav.style.display = 'block';
+        if (user.role==='admin') {
+          var am=document.getElementById('admmi'); if(am) am.style.display='flex';
+          var al=document.getElementById('admlnk'); if(al) al.style.display='flex';
+        }
+        nav('home');
+      } else if (tries < 50) {
+        setTimeout(function(){ tryEnter(tries+1); }, 100);
+      } else {
+        location.reload();
+      }
+    }
+    tryEnter(0);
+  });
+
+  // Name input hint
+  document.getElementById('onb-name').addEventListener('input', function() {
+    var v = this.value.trim();
+    var h = document.getElementById('name-hint');
+    if (!v) { h.textContent=''; return; }
+    if (v.length < 2) { h.style.color='#C9922A'; h.textContent='Keep going…'; }
+    else { h.style.color='#27AE60'; h.textContent='✓ Looks good'; }
+  });
+
+})();
+</script>
 </body>
 </html>

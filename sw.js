@@ -1,4 +1,4 @@
-const CACHE = 'skilyx-v17';
+const CACHE = 'skilyx-v18';
 const ASSETS = ['/index.html', '/manifest.json'];
 
 self.addEventListener('install', e => {
