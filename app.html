@@ -967,12 +967,12 @@ function ago(ts) {
 }
 
 // ── STATE ───────────────────────────────────────────────────────
-let CU = null; // current user
-let CS = 'auth'; // current screen
-let SH = []; // screen history
-let CL = null; // current listing
-let CC = null; // current conversation id
-let selDel = 'meetup';
+var CU = null; // current user — var so window.CU assignment works
+var CS = 'auth'; // current screen
+var SH = []; // screen history
+var CL = null; // current listing
+var CC = null; // current conversation id
+var selDel = 'meetup';
 let selStar = 5;
 let curOid = null;
 let srchTimer = null;
