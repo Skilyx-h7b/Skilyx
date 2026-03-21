@@ -553,9 +553,7 @@ function finishOnboarding() {
     </div>
     <button id="next1-btn" 
   style="width:100%;padding:16px;background:#C9922A;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;display:block;cursor:pointer"
-  ontouchstart="this.style.opacity='.7'"
-  ontouchend="this.style.opacity='1';goStep(2)"
-  onclick="goStep(2)">NEXT →</button>
+  ontouchstart="event.preventDefault();goStep(2)" onclick="goStep(2)">NEXT →</button>
   </div>
 
   <!-- STEP 2: Name -->
@@ -572,10 +570,8 @@ function finishOnboarding() {
     </div>
     <button id="next2-btn"
   style="width:100%;padding:16px;background:#C9922A;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;display:block;cursor:pointer"
-  ontouchstart="this.style.opacity='.7'"
-  ontouchend="this.style.opacity='1';goStep(3)"
-  onclick="goStep(3)">NEXT →</button>
-    <button id="back1-btn" style="width:100%;padding:12px;background:none;border:none;color:#606060;font-size:13px;font-family:Outfit,sans-serif;cursor:pointer" ontouchend="goStep(1)" onclick="goStep(1)">← Back</button>
+  ontouchstart="event.preventDefault();goStep(3)" onclick="goStep(3)">NEXT →</button>
+    <button id="back1-btn" style="width:100%;padding:12px;background:none;border:none;color:#606060;font-size:13px;font-family:Outfit,sans-serif;cursor:pointer" ontouchstart="event.preventDefault();goStep(1)" onclick="goStep(1)">← Back</button>
   </div>
 
   <!-- STEP 3: City -->
@@ -603,10 +599,8 @@ function finishOnboarding() {
     </div>
     <button id="finish-btn"
   style="width:100%;padding:16px;background:#0A0A0A;color:#fff;border:1.5px solid #2E2E2C;border-radius:12px;font-size:15px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;display:block;cursor:pointer"
-  ontouchstart="this.style.opacity='.7'"
-  ontouchend="this.style.opacity='1';finishOnboarding()"
-  onclick="finishOnboarding()">ENTER SKILYX →</button>
-    <button id="back2-btn" style="width:100%;padding:12px;background:none;border:none;color:#606060;font-size:13px;font-family:Outfit,sans-serif;cursor:pointer" ontouchend="goStep(2)" onclick="goStep(2)">← Back</button>
+  ontouchstart="event.preventDefault();finishOnboarding()" onclick="finishOnboarding()">ENTER SKILYX →</button>
+    <button id="back2-btn" style="width:100%;padding:12px;background:none;border:none;color:#606060;font-size:13px;font-family:Outfit,sans-serif;cursor:pointer" ontouchstart="event.preventDefault();goStep(2)" onclick="goStep(2)">← Back</button>
   </div>
 </div>
 
