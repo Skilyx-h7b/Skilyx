@@ -1182,26 +1182,7 @@ let _onbAv = '🦁';
 let _onbCity = '';
 const BLOCKED_NAMES = ['admin','skilyx','test','fake','asdf','null','undefined'];
 
-function goStep(n) {
-  if (n === 3) {
-    const nameEl = document.getElementById('onb-name');
-    const name = nameEl ? nameEl.value.trim() : '';
-    const hint = document.getElementById('hint-onb-name');
-    if (name.length < 2) {
-      if (hint) { hint.textContent='Enter at least 2 characters'; hint.style.color='#E74C3C'; }
-      if (nameEl) nameEl.focus();
-      return;
-    }
-  }
-  for (let i=1; i<=3; i++) {
-    const el = document.getElementById('onb-'+i);
-    if (el) el.style.display = (i===n) ? 'block' : 'none';
-  }
-  if (n===2) {
-    const prev = document.getElementById('onb-av-preview');
-    if (prev) prev.textContent = _onbAv;
-  }
-}
+// goStep defined earlier
 
 function onbStep(n) { goStep(n); }
 function initOnboarding() {}
@@ -1216,24 +1197,7 @@ function checkOnbName(input) {
   hint.style.color='#27AE60'; hint.textContent='✓ Looks good';
 }
 
-function finishOnboarding() {
-  const nameEl = document.getElementById('onb-name');
-  const name = nameEl ? nameEl.value.trim() : '';
-  if (!name || name.length<2) { goStep(2); return; }
-  let city = _onbCity;
-  if (city==='Other') {
-    const oc = document.getElementById('city-other');
-    city = oc ? (oc.value.trim()||'South Africa') : 'South Africa';
-  }
-  if (!city) { showToast('Please pick your city','err'); return; }
-  const users = DB.all('users');
-  let finalName = name;
-  if (users.find(u=>u.name.toLowerCase()===name.toLowerCase())) {
-    finalName = name+(Math.floor(Math.random()*900)+100);
-    showToast('Name taken — registered as '+finalName);
-  }
-  createProfile(finalName, city);
-}
+// finishOnboarding defined earlier
 
 function createProfile(name, city) {
   const users = DB.all('users');
@@ -2620,42 +2584,9 @@ function _tap(fn) {
   setTimeout(function(){ _busy = false; }, 200);
 }
 
-function goStep(n) {
-  _tap(function() {
-    if (n === 3) {
-      var nameEl = document.getElementById('onb-name');
-      var name = nameEl ? nameEl.value.trim() : '';
-      if (name.length < 2) {
-        var hint = document.getElementById('hint-onb-name');
-        if (hint) { hint.textContent = 'Enter at least 2 characters'; hint.style.color = '#E74C3C'; }
-        if (nameEl) nameEl.focus();
-        _busy = false;
-        return;
-      }
-    }
-    for (var i = 1; i <= 3; i++) {
-      var el = document.getElementById('onb-' + i);
-      if (el) el.style.display = (i === n) ? 'block' : 'none';
-    }
-    if (n === 2) {
-      var prev = document.getElementById('onb-av-preview');
-      if (prev) prev.textContent = _onbAv;
-    }
-    window.scrollTo(0, 0);
-  });
-}
+// goStep defined earlier
 
-function selectAvatar(id, emoji) {
-  ['av-lion','av-tiger','av-fox','av-butterfly','av-moon','av-bolt',
-   'av-wave','av-fire','av-diamond','av-leaf','av-target','av-rocket',
-   'av-masks','av-flower','av-crown'].forEach(function(aid) {
-    var a = document.getElementById(aid);
-    if (a) a.style.border = '2px solid #2E2E2C';
-  });
-  var el = document.getElementById(id);
-  if (el) el.style.border = '2px solid #C9922A';
-  _onbAv = emoji;
-}
+// selectAvatar defined earlier
 
 function pickCityInline(el, city) {
   document.querySelectorAll('.city-opt').forEach(function(c) {
@@ -2681,46 +2612,7 @@ function pickCityInline(el, city) {
   }
 }
 
-function finishOnboarding() {
-  _tap(function() {
-    var nameEl = document.getElementById('onb-name');
-    var name = nameEl ? nameEl.value.trim() : '';
-    if (name.length < 2) { goStep(2); _busy = false; return; }
-
-    var city = _onbCity;
-    if (!city) {
-      // Highlight cities to show user must pick one
-      var cg = document.getElementById('city-grid');
-      if (cg) { cg.style.border = '2px solid #E74C3C'; cg.style.borderRadius = '12px'; cg.style.padding = '8px'; }
-      var hint = document.createElement('div');
-      hint.style.cssText = 'color:#E74C3C;font-size:13px;margin-top:8px;font-weight:600';
-      hint.textContent = 'Please pick your city first';
-      hint.id = 'city-err';
-      var existing = document.getElementById('city-err');
-      if (!existing) {
-        var cg2 = document.getElementById('city-grid');
-        if (cg2) cg2.parentNode.insertBefore(hint, cg2.nextSibling);
-      }
-      _busy = false;
-      return;
-    }
-
-    if (city === 'Other') {
-      var oc = document.getElementById('city-other');
-      city = oc ? (oc.value.trim() || 'South Africa') : 'South Africa';
-    }
-
-    // Create profile
-    if (typeof createProfile === 'function') {
-      createProfile(name, city);
-    } else {
-      // Fallback if main JS not loaded yet — retry once
-      setTimeout(function() {
-        if (typeof createProfile === 'function') createProfile(name, city);
-      }, 500);
-    }
-  });
-}
+// finishOnboarding defined earlier
 </script>
 E html>
 <html lang="en">
@@ -3194,142 +3086,13 @@ function _go(fn) {
   setTimeout(function(){ _busy = false; }, 200);
 }
 
-function goStep(n) {
-  _go(function(){
-    if (n === 3) {
-      var nm = (document.getElementById('onb-name')||{}).value||'';
-      if (nm.trim().length < 2) {
-        var h = document.getElementById('hint-onb-name');
-        if (h) { h.textContent='Enter at least 2 characters'; h.style.color='#E74C3C'; }
-        var inp = document.getElementById('onb-name');
-        if (inp) inp.focus();
-        _busy = false; return;
-      }
-    }
-    for (var i=1; i<=3; i++) {
-      var el = document.getElementById('onb-'+i);
-      if (el) el.style.display = i===n ? 'block' : 'none';
-    }
-    if (n===2) {
-      var prev = document.getElementById('onb-av-preview');
-      if (prev) prev.textContent = _onbAv;
-    }
-  });
-}
+// goStep defined earlier
 
-function selectAvatar(id, emoji) {
-  ['av-lion','av-tiger','av-fox','av-butterfly','av-moon','av-bolt',
-   'av-wave','av-fire','av-diamond','av-leaf','av-target','av-rocket',
-   'av-masks','av-flower','av-crown'].forEach(function(aid){
-    var a=document.getElementById(aid);
-    if(a) a.style.border='2px solid #2E2E2C';
-  });
-  var el=document.getElementById(id);
-  if(el) el.style.border='2px solid #C9922A';
-  _onbAv = emoji;
-}
+// selectAvatar defined earlier
 
-function pickCityInline(el, city) {
-  document.querySelectorAll('.city-opt').forEach(function(c){
-    c.style.border='1.5px solid #2E2E2C';
-    c.style.color='#A09C94';
-    c.style.background='#1C1C1A';
-  });
-  el.style.border='1.5px solid #C9922A';
-  el.style.color='#C9922A';
-  el.style.background='rgba(201,146,42,.1)';
-  _onbCity = city;
-  var ow=document.getElementById('city-other-wrap');
-  if(ow) ow.style.display = city==='Other'?'block':'none';
-  // Enable Enter Skilyx button
-  var fb = document.getElementById('finish-btn');
-  if(fb) { fb.style.background='#C9922A'; fb.style.border='none'; }
-}
+// pickCityInline defined earlier
 
-function finishOnboarding() {
-  var nameEl = document.getElementById('onb-name');
-  var name = nameEl ? nameEl.value.trim() : '';
-  if (name.length < 2) { goStep(2); return; }
-
-  var city = window._onbCity || _onbCity || 'Johannesburg';
-  if (city === 'Other') {
-    var oc = document.getElementById('city-other');
-    city = oc && oc.value.trim() ? oc.value.trim() : 'South Africa';
-  }
-
-  var btn = document.getElementById('finish-btn');
-  if (btn) { btn.textContent = 'Entering...'; btn.style.opacity = '0.7'; }
-
-  // Build user directly — no dependency on main JS scope
-  var uid_val = Date.now().toString(36) + Math.random().toString(36).slice(2,7);
-  var existing = [];
-  try { existing = JSON.parse(localStorage.getItem('sk_users')) || []; } catch(e){}
-  
-  // Check name taken
-  var finalName = name;
-  if (existing.find(function(u){ return u.name.toLowerCase()===name.toLowerCase(); })) {
-    finalName = name + (Math.floor(Math.random()*900)+100);
-  }
-
-  var user = {
-    id: uid_val,
-    name: finalName,
-    avatar: window._onbAv || _onbAv || '🦁',
-    city: city,
-    role: existing.length === 0 ? 'admin' : 'user',
-    ratingAvg:0, ratingCount:0,
-    ratingAsSeller:0, countAsSeller:0,
-    ratingAsBuyer:0, countAsBuyer:0,
-    totalTrades:0, wallet:0, listings:0, sales:0,
-    is_suspended:false,
-    joinedAt: new Date().toISOString()
-  };
-
-  // Save to localStorage
-  existing.unshift(user);
-  localStorage.setItem('sk_users', JSON.stringify(existing));
-  localStorage.setItem('sk_session', JSON.stringify(user.id));
-
-  // Save to window so main JS can pick it up
-  window.CU = user;
-  window._pendingUser = user;
-
-  // Try to navigate — retry until main JS is ready
-  var _tries = 0;
-  function tryNav() {
-    _tries++;
-    if (typeof nav === 'function' && typeof showS === 'function') {
-      CU = user;
-      window.CU = user;
-      if (user.role === 'admin') {
-        var am = document.getElementById('admmi');
-        var al = document.getElementById('admlnk');
-        if (am) am.style.display = 'flex';
-        if (al) al.style.display = 'flex';
-      }
-      // Hide auth screen directly
-      var authEl = document.getElementById('screen-auth');
-      if (authEl) authEl.style.display = 'none';
-      // Show home screen directly
-      var homeEl = document.getElementById('screen-home');
-      if (homeEl) {
-        homeEl.classList.add('active');
-        homeEl.style.display = 'flex';
-      }
-      // Show bottom nav
-      var bnav = document.getElementById('bnav');
-      if (bnav) bnav.style.display = 'block';
-      // Use nav() to set up properly
-      nav('home');
-    } else if (_tries < 40) {
-      setTimeout(tryNav, 100);
-    } else {
-      // Session saved — reload will auto-login
-      window.location.reload();
-    }
-  }
-  tryNav();
-}
+// finishOnboarding defined earlier
 </script>
 </head>
 <body>
@@ -3922,26 +3685,7 @@ let _onbAv = '🦁';
 let _onbCity = '';
 const BLOCKED_NAMES = ['admin','skilyx','test','fake','asdf','null','undefined'];
 
-function goStep(n) {
-  if (n === 3) {
-    const nameEl = document.getElementById('onb-name');
-    const name = nameEl ? nameEl.value.trim() : '';
-    const hint = document.getElementById('hint-onb-name');
-    if (name.length < 2) {
-      if (hint) { hint.textContent='Enter at least 2 characters'; hint.style.color='#E74C3C'; }
-      if (nameEl) nameEl.focus();
-      return;
-    }
-  }
-  for (let i=1; i<=3; i++) {
-    const el = document.getElementById('onb-'+i);
-    if (el) el.style.display = (i===n) ? 'block' : 'none';
-  }
-  if (n===2) {
-    const prev = document.getElementById('onb-av-preview');
-    if (prev) prev.textContent = _onbAv;
-  }
-}
+// goStep defined earlier
 
 function onbStep(n) { goStep(n); }
 function initOnboarding() {}
@@ -3956,24 +3700,7 @@ function checkOnbName(input) {
   hint.style.color='#27AE60'; hint.textContent='✓ Looks good';
 }
 
-function finishOnboarding() {
-  const nameEl = document.getElementById('onb-name');
-  const name = nameEl ? nameEl.value.trim() : '';
-  if (!name || name.length<2) { goStep(2); return; }
-  let city = _onbCity;
-  if (city==='Other') {
-    const oc = document.getElementById('city-other');
-    city = oc ? (oc.value.trim()||'South Africa') : 'South Africa';
-  }
-  if (!city) { showToast('Please pick your city','err'); return; }
-  const users = DB.all('users');
-  let finalName = name;
-  if (users.find(u=>u.name.toLowerCase()===name.toLowerCase())) {
-    finalName = name+(Math.floor(Math.random()*900)+100);
-    showToast('Name taken — registered as '+finalName);
-  }
-  createProfile(finalName, city);
-}
+// finishOnboarding defined earlier
 
 function createProfile(name, city) {
   const users = DB.all('users');
