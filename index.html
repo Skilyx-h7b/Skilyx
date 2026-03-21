@@ -486,6 +486,20 @@ function selectAvatar(id, emoji) {
   _onbAv = emoji;
 }
 
+function pickCityInline(el, city) {
+  document.querySelectorAll('.city-opt').forEach(function(c){
+    c.style.border='1.5px solid #2E2E2C';
+    c.style.color='#A09C94';
+    c.style.background='#1C1C1A';
+  });
+  el.style.border='1.5px solid #C9922A';
+  el.style.color='#C9922A';
+  el.style.background='rgba(201,146,42,.1)';
+  _onbCity = city;
+  var ow=document.getElementById('city-other-wrap');
+  if(ow) ow.style.display = city==='Other'?'block':'none';
+}
+
 function finishOnboarding() {
   var name = (document.getElementById('onb-name')||{}).value||'';
   name = name.trim();
@@ -521,21 +535,21 @@ function finishOnboarding() {
     <div style="font-family:'Playfair Display',serif;font-size:19px;font-weight:700;color:#E8E4DC;margin-bottom:4px">Pick your avatar</div>
     <div style="font-size:12px;color:#606060;margin-bottom:14px">No email. No password. Just pick who you are and start trading.</div>
     <div id="av-grid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:16px">
-      <div id="av-lion"      style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #C9922A;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer">🦁</div>
-      <div id="av-tiger"     style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer">🐯</div>
-      <div id="av-fox"       style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer">🦊</div>
+      <div id="av-lion" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #C9922A;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer" ontouchstart="event.preventDefault();selectAvatar('av-lion','🦁')" onclick="selectAvatar('av-lion','🦁')">🦁</div>
+      <div id="av-tiger" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer" ontouchstart="event.preventDefault();selectAvatar('av-tiger','🐯')" onclick="selectAvatar('av-tiger','🐯')">🐯</div>
+      <div id="av-fox" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer" ontouchstart="event.preventDefault();selectAvatar('av-fox','🦊')" onclick="selectAvatar('av-fox','🦊')">🦊</div>
       <div id="av-butterfly" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer" ontouchstart="event.preventDefault();selectAvatar('av-butterfly','🦋')" onclick="selectAvatar('av-butterfly','🦋')">🦋</div>
-      <div id="av-moon"      style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer">🌙</div>
-      <div id="av-bolt"      style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer">⚡</div>
-      <div id="av-wave"      style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer">🌊</div>
-      <div id="av-fire"      style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer">🔥</div>
-      <div id="av-diamond"   style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer">💎</div>
-      <div id="av-leaf"      style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer">🌿</div>
-      <div id="av-target"    style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer">🎯</div>
-      <div id="av-rocket"    style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer">🚀</div>
-      <div id="av-masks"     style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer">🎭</div>
-      <div id="av-flower"    style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer">🌸</div>
-      <div id="av-crown"     style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer">👑</div>
+      <div id="av-moon" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer" ontouchstart="event.preventDefault();selectAvatar('av-moon','🌙')" onclick="selectAvatar('av-moon','🌙')">🌙</div>
+      <div id="av-bolt" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer" ontouchstart="event.preventDefault();selectAvatar('av-bolt','⚡')" onclick="selectAvatar('av-bolt','⚡')">⚡</div>
+      <div id="av-wave" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer" ontouchstart="event.preventDefault();selectAvatar('av-wave','🌊')" onclick="selectAvatar('av-wave','🌊')">🌊</div>
+      <div id="av-fire" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer" ontouchstart="event.preventDefault();selectAvatar('av-fire','🔥')" onclick="selectAvatar('av-fire','🔥')">🔥</div>
+      <div id="av-diamond" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer" ontouchstart="event.preventDefault();selectAvatar('av-diamond','💎')" onclick="selectAvatar('av-diamond','💎')">💎</div>
+      <div id="av-leaf" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer" ontouchstart="event.preventDefault();selectAvatar('av-leaf','🌿')" onclick="selectAvatar('av-leaf','🌿')">🌿</div>
+      <div id="av-target" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer" ontouchstart="event.preventDefault();selectAvatar('av-target','🎯')" onclick="selectAvatar('av-target','🎯')">🎯</div>
+      <div id="av-rocket" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer" ontouchstart="event.preventDefault();selectAvatar('av-rocket','🚀')" onclick="selectAvatar('av-rocket','🚀')">🚀</div>
+      <div id="av-masks" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer" ontouchstart="event.preventDefault();selectAvatar('av-masks','🎭')" onclick="selectAvatar('av-masks','🎭')">🎭</div>
+      <div id="av-flower" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer" ontouchstart="event.preventDefault();selectAvatar('av-flower','🌸')" onclick="selectAvatar('av-flower','🌸')">🌸</div>
+      <div id="av-crown" style="aspect-ratio:1;border-radius:12px;background:#1C1C1A;border:2px solid #2E2E2C;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer" ontouchstart="event.preventDefault();selectAvatar('av-crown','👑')" onclick="selectAvatar('av-crown','👑')">👑</div>
     </div>
     <button id="next1-btn" 
   style="width:100%;padding:16px;background:#C9922A;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;display:block;cursor:pointer"
@@ -570,19 +584,19 @@ function finishOnboarding() {
     <div style="font-family:'Playfair Display',serif;font-size:19px;font-weight:700;color:#E8E4DC;margin-bottom:4px">Where are you based?</div>
     <div style="font-size:12px;color:#606060;margin-bottom:16px">Helps people find deals near them.</div>
     <div id="city-grid" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px">
-      <div class="city-opt" data-city="Johannesburg"  style="padding:8px 14px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">Johannesburg</div>
-      <div class="city-opt" data-city="Cape Town"     style="padding:8px 14px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">Cape Town</div>
-      <div class="city-opt" data-city="Durban"        style="padding:8px 14px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">Durban</div>
-      <div class="city-opt" data-city="Pretoria"      style="padding:8px 14px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">Pretoria</div>
-      <div class="city-opt" data-city="Port Elizabeth" style="padding:8px 14px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">Port Elizabeth</div>
-      <div class="city-opt" data-city="Bloemfontein"  style="padding:8px 14px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">Bloemfontein</div>
-      <div class="city-opt" data-city="Soweto"        style="padding:8px 14px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">Soweto</div>
-      <div class="city-opt" data-city="Sandton"       style="padding:8px 14px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">Sandton</div>
-      <div class="city-opt" data-city="Midrand"       style="padding:8px 14px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">Midrand</div>
-      <div class="city-opt" data-city="East London"   style="padding:8px 14px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">East London</div>
-      <div class="city-opt" data-city="Centurion"     style="padding:8px 14px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">Centurion</div>
-      <div class="city-opt" data-city="Other"         style="padding:8px 14px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:12px;font-weight:600;color:#A09C94;cursor:pointer">Other</div>
-    </div>
+  <div class="city-opt" data-city="Johannesburg" style="padding:9px 15px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:13px;font-weight:600;color:#A09C94;cursor:pointer" ontouchstart="event.preventDefault();pickCityInline(this,'Johannesburg')" onclick="pickCityInline(this,'Johannesburg')">Johannesburg</div>
+  <div class="city-opt" data-city="Cape Town" style="padding:9px 15px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:13px;font-weight:600;color:#A09C94;cursor:pointer" ontouchstart="event.preventDefault();pickCityInline(this,'Cape Town')" onclick="pickCityInline(this,'Cape Town')">Cape Town</div>
+  <div class="city-opt" data-city="Durban" style="padding:9px 15px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:13px;font-weight:600;color:#A09C94;cursor:pointer" ontouchstart="event.preventDefault();pickCityInline(this,'Durban')" onclick="pickCityInline(this,'Durban')">Durban</div>
+  <div class="city-opt" data-city="Pretoria" style="padding:9px 15px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:13px;font-weight:600;color:#A09C94;cursor:pointer" ontouchstart="event.preventDefault();pickCityInline(this,'Pretoria')" onclick="pickCityInline(this,'Pretoria')">Pretoria</div>
+  <div class="city-opt" data-city="Port Elizabeth" style="padding:9px 15px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:13px;font-weight:600;color:#A09C94;cursor:pointer" ontouchstart="event.preventDefault();pickCityInline(this,'Port Elizabeth')" onclick="pickCityInline(this,'Port Elizabeth')">Port Elizabeth</div>
+  <div class="city-opt" data-city="Bloemfontein" style="padding:9px 15px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:13px;font-weight:600;color:#A09C94;cursor:pointer" ontouchstart="event.preventDefault();pickCityInline(this,'Bloemfontein')" onclick="pickCityInline(this,'Bloemfontein')">Bloemfontein</div>
+  <div class="city-opt" data-city="Soweto" style="padding:9px 15px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:13px;font-weight:600;color:#A09C94;cursor:pointer" ontouchstart="event.preventDefault();pickCityInline(this,'Soweto')" onclick="pickCityInline(this,'Soweto')">Soweto</div>
+  <div class="city-opt" data-city="Sandton" style="padding:9px 15px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:13px;font-weight:600;color:#A09C94;cursor:pointer" ontouchstart="event.preventDefault();pickCityInline(this,'Sandton')" onclick="pickCityInline(this,'Sandton')">Sandton</div>
+  <div class="city-opt" data-city="Midrand" style="padding:9px 15px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:13px;font-weight:600;color:#A09C94;cursor:pointer" ontouchstart="event.preventDefault();pickCityInline(this,'Midrand')" onclick="pickCityInline(this,'Midrand')">Midrand</div>
+  <div class="city-opt" data-city="East London" style="padding:9px 15px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:13px;font-weight:600;color:#A09C94;cursor:pointer" ontouchstart="event.preventDefault();pickCityInline(this,'East London')" onclick="pickCityInline(this,'East London')">East London</div>
+  <div class="city-opt" data-city="Centurion" style="padding:9px 15px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:13px;font-weight:600;color:#A09C94;cursor:pointer" ontouchstart="event.preventDefault();pickCityInline(this,'Centurion')" onclick="pickCityInline(this,'Centurion')">Centurion</div>
+  <div class="city-opt" data-city="Other" style="padding:9px 15px;border-radius:20px;background:#1C1C1A;border:1.5px solid #2E2E2C;font-size:13px;font-weight:600;color:#A09C94;cursor:pointer" ontouchstart="event.preventDefault();pickCityInline(this,'Other')" onclick="pickCityInline(this,'Other')">Other</div>
+</div>
     <div id="city-other-wrap" style="display:none;margin-bottom:14px">
       <input id="city-other" type="text" placeholder="Type your city…"
         style="width:100%;background:#202020;border:1.5px solid #303030;border-radius:11px;padding:13px 16px;color:#E8E4DC;font-size:15px;outline:none;box-sizing:border-box">
